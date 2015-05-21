@@ -1,7 +1,7 @@
 #!/bin/bash
 
-stack_name=$1
-function_arn=$2
+function_arn=$1
+stack_name=$2
 cat <<EOT
 {
   "RequestType": "Create",
