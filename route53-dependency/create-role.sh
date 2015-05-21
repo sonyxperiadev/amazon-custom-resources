@@ -1,12 +1,8 @@
 #!/bin/bash
 
 template="./route53-dependency-role.template"
-region='eu-west-1'
-stack_name='Route53DependencySupport'
+stack_name='route53-dependency-support'
 
-aws cloudformation create-stack \
-  --region $region \
-  --stack-name $stack_name \
-  --template-body "`cat $template`" \
-  --capabilities CAPABILITY_IAM
+current_dir=`readlink -f ${BASH_SOURCE[0]%/*.sh}`
+$current_dir/../create-role.sh $stack_name $template
 

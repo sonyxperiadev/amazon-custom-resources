@@ -1,7 +1,7 @@
 #!/bin/bash
 
-domain_name=$1
-function_arn=$2
+function_arn=$1
+domain_name=$2
 cat <<EOT
 {
   "RequestType": "Create",
