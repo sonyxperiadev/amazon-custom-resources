@@ -3,4 +3,5 @@
 template="./elasticache-dependency-role.template"
 stack_name='elasticache-dependency-support'
 
-../create-role.sh $stack_name $template
+current_dir=`readlink -f ${BASH_SOURCE[0]%/*.sh}`
+$current_dir/../create-role.sh $stack_name $template
