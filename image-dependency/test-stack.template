@@ -1,0 +1,36 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Test Stack for ImageDependency",
+
+  "Resources": {
+    "Image": {
+      "Type": "Custom::ImageDependency",
+      "Properties": {
+        "ServiceToken": { "Fn::Join": [ "", [
+          "arn:aws:lambda:",
+          { "Ref": "AWS::Region" },
+          ":",
+          { "Ref": "AWS::AccountId" },
+          ":function:imageDependency"
+        ] ] },
+        "ImageName": "docker*"
+      }
+    }
+  },
+
+  "Outputs": {
+    "ImageId": {
+      "Value": {
+        "Fn::GetAtt": [ "Image", "ImageId" ]
+      },
+      "Description": "Image Id"
+    },
+    "ImageTags": {
+      "Value": {
+        "Fn::GetAtt": [ "Image", "Tags" ]
+      },
+      "Description": "Image Tags"
+    }
+  }
+}
+

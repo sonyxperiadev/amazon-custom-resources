@@ -1,0 +1,36 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Test Stack for ElasticacheDependency",
+
+  "Resources": {
+    "Elasticache": {
+      "Type": "Custom::ElasticacheDependency",
+      "Properties": {
+        "ServiceToken": { "Fn::Join": [ "", [
+          "arn:aws:lambda:",
+          { "Ref": "AWS::Region" },
+          ":",
+          { "Ref": "AWS::AccountId" },
+          ":function:elasticacheDependency"
+        ] ] },
+        "CacheId": "bod-re-19wlnyebhn54b"
+      }
+    }
+  },
+
+  "Outputs": {
+    "CacheNodeEndpoint0": {
+      "Value": {
+        "Fn::GetAtt": [ "Elasticache", "CacheNodeEndpoint0" ]
+      },
+      "Description": "Endpoint"
+    },
+    "CacheEngine": {
+      "Value": {
+        "Fn::GetAtt": [ "Elasticache", "Engine" ]
+      },
+      "Description": "Engine"
+    }
+  }
+}
+

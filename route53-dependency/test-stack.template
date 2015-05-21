@@ -1,0 +1,50 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Test Stack for Route53",
+
+  "Parameters": {
+    "DomainName": {
+      "Description": "Domain name for DNS",
+      "Type": "String",
+      "Default": "lifelog-dev.sonymobile.com"
+    }
+  },
+
+  "Resources": {
+    "Route53": {
+      "Type": "Custom::Route53Dependency",
+      "Properties": {
+        "ServiceToken": { "Fn::Join": [ "", [
+          "arn:aws:lambda:",
+          { "Ref": "AWS::Region" },
+          ":",
+          { "Ref": "AWS::AccountId" },
+          ":function:route53Dependency"
+        ] ] },
+        "DomainName": { "Ref": "DomainName" }
+      }
+    }
+  },
+
+  "Outputs": {
+    "Route53Id": {
+      "Value": {
+        "Fn::GetAtt": [ "Route53", "Id" ]
+      },
+      "Description": "Route53 Id"
+    },
+    "Route53Name": {
+      "Value": {
+        "Fn::GetAtt": [ "Route53", "Name" ]
+      },
+      "Description": "Route53 Name"
+    },
+    "Route53Count": {
+      "Value": {
+        "Fn::GetAtt": [ "Route53", "ResourceRecordSetCount" ]
+      },
+      "Description": "Route53 Count"
+    }
+  }
+}
+
