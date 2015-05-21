@@ -1,23 +1,9 @@
 #!/bin/bash
-region='eu-west-1'
+
+current_dir=`readlink -f ${BASH_SOURCE[0]%/*.sh}`
+
 func='vpcDependency'
+event_script="$current_dir/event.json.sh"
+param=${1:-"default"}
 
-vpc_name=${1:-default}
-
-function_arn() {
-  aws lambda get-function-configuration \
-    --function-name $func \
-    | jq '.FunctionArn' \
-    | tr -d \"
-}
-
-func_arn=$(function_arn)
-payload="$(./event.json.sh $vpc_name $func_arn)"
-
-aws lambda invoke \
- --function-name $func \
- --region $region \
- --payload "$payload" \
- --log-type Tail \
- context-done.log \
- | jq .LogResult | tr -d \" | base64 --decode
+$current_dir/../invoke-lambda.sh $func $event_script $param

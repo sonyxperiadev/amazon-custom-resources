@@ -1,12 +1,7 @@
 #!/bin/bash
 
 template="./vpc-dependency-role.template"
-region='eu-west-1'
-stack_name='VpcDependencySupport'
+stack_name='vpc-dependency-support'
 
-aws cloudformation create-stack \
-  --region $region \
-  --stack-name $stack_name \
-  --template-body "`cat $template`" \
-  --capabilities CAPABILITY_IAM
-
+current_dir=`readlink -f ${BASH_SOURCE[0]%/*.sh}`
+$current_dir/../create-role.sh $stack_name $template
