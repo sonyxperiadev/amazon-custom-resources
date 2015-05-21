@@ -1,0 +1,30 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Test Stack for ElasticacheDependency",
+
+  "Resources": {
+    "Stack": {
+      "Type": "Custom::StackDepdendency",
+      "Properties": {
+        "ServiceToken": { "Fn::Join": [ "", [
+          "arn:aws:lambda:",
+          { "Ref": "AWS::Region" },
+          ":",
+          { "Ref": "AWS::AccountId" },
+          ":function:stackDependency"
+        ] ] },
+        "StackName": "stack-dependency-support"
+      }
+    }
+  },
+
+  "Outputs": {
+    "Role": {
+      "Value": {
+        "Fn::GetAtt": [ "Stack", "Role" ]
+      },
+      "Description": "Role"
+    }
+  }
+}
+
