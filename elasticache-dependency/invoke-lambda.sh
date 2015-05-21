@@ -1,23 +1,9 @@
 #!/bin/bash
-region='eu-west-1'
+
+current_dir=`readlink -f ${BASH_SOURCE[0]%/*.sh}`
+
 func='elasticacheDependency'
+event_script="$current_dir/event.json.sh"
+param=${1:-"tap-re-1p7mhl19hxzx4"}
 
-cache_id=${1:-"bod-re-19wlnyebhn54b"}
-
-function_arn() {
-  aws lambda get-function-configuration \
-    --function-name $func \
-    | jq '.FunctionArn' \
-    | tr -d \"
-}
-
-func_arn=$(function_arn)
-payload="$(./event.json.sh $cache_id $func_arn)"
-
-aws lambda invoke \
- --function-name $func \
- --region $region \
- --payload "$payload" \
- --log-type Tail \
- context-done.log \
- | jq .LogResult | tr -d \" | base64 --decode
+$current_dir/../invoke-lambda.sh $func $event_script $param

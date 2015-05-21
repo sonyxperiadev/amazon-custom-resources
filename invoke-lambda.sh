@@ -9,7 +9,7 @@ then
 fi
 
 
-function="$1"
+func="$1"
 event_script="$2"
 param="$3"
 

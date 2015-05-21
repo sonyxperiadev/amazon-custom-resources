@@ -1,7 +1,7 @@
 #!/bin/bash
 
-cache_id=$1
-function_arn=$2
+function_arn=$1
+cache_id=$2
 cat <<EOT
 {
   "RequestType": "Create",
