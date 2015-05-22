@@ -61,9 +61,6 @@ function sendResponse(event, context, status, data, err) {
     Data: data
   };
 
-    Data: data
-  };
-
   console.log("RESPONSE:\n", responseBody);
   var json = JSON.stringify(responseBody);
 
