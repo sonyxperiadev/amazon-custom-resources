@@ -38,19 +38,26 @@ route53Dependency.handler = function(event, context) {
 
   route53Dependency(event.ResourceProperties, function(err, result) {
     var status = err ? 'FAILED' : 'SUCCESS';
-    return sendResponse(event, context, status, result);
+    return sendResponse(event, context, status, result, err);
   });
 };
 
+function getReason(err) {
+  if (err)
+    return err.message;
+  else
+    return '';
+}
 
-function sendResponse(event, context, status, data, callback) {
+
+function sendResponse(event, context, status, data, err) {
   var responseBody = {
     StackId: event.StackId,
     RequestId: event.RequestId,
     LogicalResourceId: event.LogicalResourceId,
     PhysicalResourceId: context.logStreamName,
     Status: status,
-    Reason: "See the details in CloudWatch Log Stream: " + context.logStreamName,
+    Reason: getReason(err) + " See details in CloudWatch Log: " + context.logStreamName,
     Data: data
   };
 
