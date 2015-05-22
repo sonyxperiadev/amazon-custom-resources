@@ -5,6 +5,6 @@ for f in */create-roles.sh; do
 done
 
 for f in */deploy-lambda.sh; do
-  (cd $(dirname $f) && deploy-lambda.sh)
+  (cd $(dirname $f) && ./deploy-lambda.sh)
 done
 
