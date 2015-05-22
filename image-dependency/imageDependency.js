@@ -19,8 +19,14 @@ function imageDependency(properties, callback) {
 
     var matching = data.Images;
     console.log('matching', matching)
-    if (matching.length != 1)
-      return callback('Exactly one matching image is allowed ' + matching);
+    if (matching.length != 1) {
+      var names = matching.map(function(image) {
+        return image.Name;
+      });
+      var message = 'Exactly one matching image is allowed: ' +
+        names.length + ' ' + names.join();
+      return callback(new Error(message));
+    }
     var match = matching[0];
     delete match.ProductCodes;
     delete match.BlockDeviceMappings;

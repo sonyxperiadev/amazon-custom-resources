@@ -1,7 +1,7 @@
 #!/bin/bash
 
-image_name=$1
-function_arn=$2
+function_arn=$1
+image_name=$2
 cat <<EOT
 {
   "RequestType": "Create",
