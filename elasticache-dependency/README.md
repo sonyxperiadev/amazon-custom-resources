@@ -1,7 +1,7 @@
 # elasticacheDependency
 
-A Lambda function which implements a Custom Resource for Cloud Formation that
-gets information about elasticache clusters.
+A Custom Resource for Cloud Formation that gets information about elasticache
+clusters, including Endpoints.
 
 ## Installation
 
@@ -23,7 +23,9 @@ than one is found `FAILED` is returned.
 
 The outputs from the `Custom::ElasticacheDependency` can be referred with `Fn:GetAtt`.
 
-Available values are:
+Example: `"Fn::GetAtt": ["Elasticache", "CacheNodeEndpoint0"]`
+
+### Example Output
 
 ```
 {
@@ -46,9 +48,8 @@ Available values are:
 }
 ```
 
-Example: `"Fn::GetAtt": ["Elasticache", "CacheNodeEndpoint0"]`
 
-### Extended Example
+### Extended Example with Stack
 
 ```
 "Parameters": {

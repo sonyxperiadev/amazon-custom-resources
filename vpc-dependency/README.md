@@ -26,7 +26,26 @@ Available values are: `VpcId`, `CidrBlock`, `SubnetIds`, `SubnetId0`, `SubnetId1
 
 Example: `"Fn::GetAtt": ["Vpc", "VpcId"]`
 
-### Extended Example
+
+### Example Output
+
+```
+{
+  VpcId: 'vpc-061bfc6c',
+  State: 'available',
+  CidrBlock: '172.31.0.0/16',
+  DhcpOptionsId: 'dopt-1d1bfc77',
+  InstanceTenancy: 'default',
+  IsDefault: true,
+  SubnetId0: 'subnet-07110265',
+  SubnetId1: 'subnet-041bfc6e',
+  SubnetId2: 'subnet-a68eb3d2',
+  SubnetIds: 'subnet-07110265,subnet-041bfc6e,subnet-a68eb3d2'
+}
+```
+
+
+### Extended Example with Stack
 
 ```
 "Parameters": {

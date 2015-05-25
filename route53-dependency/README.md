@@ -24,7 +24,17 @@ The outputs from the `Custom::Route53Dependency` can be referred with `Fn:GetAtt
 
 Example: `"Fn::GetAtt": ["Route53", "Id"]`
 
-### Extended Example
+```
+// Example Output
+{
+  Id: 'Z3U4KQS1NHWGKG',
+  Name: 'lifelog-dev.sonymobile.com',
+  ResourceRecordSetCount: 17
+}
+
+
+
+### Extended Example with Stack
 
 ```
 "Parameters": {

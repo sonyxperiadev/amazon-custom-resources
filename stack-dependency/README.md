@@ -28,7 +28,34 @@ In addition to the normal outputs from a stack, we also get access to all the
 environment variables formatted as a Unix `env-file`. They are available with
 the property `Environment`.
 
-### Extended Example
+### Example
+
+A Stack with the following Outputs defined, `Role`, and `RoleArn`
+
+```
+"Outputs": {
+  "Role": {
+    "Value": {"Ref":"Role"},
+      "Description": "Role"
+  },
+    "RoleArn": {
+      "Value": {"Fn::GetAtt": ["Role", "Arn"]},
+      "Description": "Role Arn"
+    }
+}
+
+It will receieve the following output, notice the newline separated
+Environment.
+```
+// Example output
+{
+  Role: 'stack-Role-1MFTAH8MOJ8Y4',
+  RoleArn: 'arn:aws:iam::445573518738:role/stack-Role-1MFTAH8MOJ8Y4',
+  Environment: 'Role=stack-Role-1MFTAH8MOJ8Y4\nRoleArn=arn:aws:iam::445573518738:role/stack-Role-1MFTAH8MOJ8Y4'
+ }
+```
+
+### Extended Example with Stack
 
 ```
 "Parameters": {

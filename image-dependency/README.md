@@ -27,7 +27,29 @@ Available values are: `ImageId`, `CreationDate`, ...
 
 Example: `"Fn::GetAtt": ["Image", "ImageId"]`
 
-### Extended Example
+### Example Output
+
+```
+{
+  ImageId: 'ami-cd4f25ba',
+  ImageLocation: '143044406720/docker image 201505121634',
+  State: 'available',
+  OwnerId: '143044406720',
+  CreationDate: '2015-05-12T14:34:36.000Z',
+  Public: false,
+  Architecture: 'x86_64',
+  ImageType: 'machine',
+  SriovNetSupport: 'simple',
+  Name: 'docker image 201505121634',
+  RootDeviceType: 'ebs',
+  RootDeviceName: '/dev/xvda',
+  VirtualizationType: 'hvm',
+  Tags: '',
+  Hypervisor: 'xen'
+}
+```
+
+### Extended Example with Stack
 
 ```
 "Parameters": {
