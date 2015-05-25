@@ -7,11 +7,16 @@ simplifies the re-use of templates across Amazon accounts.
 
 ## Available Resources
 
-* [elasticache-dependency](elasticache-dependency/README.md)
-* [image-dependency](image-dependency/README.md)
-* [route53-dependency](route53-dependency/README.md)
-* [stack-dependency](stack-dependency/README.md)
-* [vpc-dependency](vpc-dependency/README.md)
+* [elasticache-dependency](elasticache-dependency/README.md) gets information
+  about elasticache clusters, including Endpoints.
+* [image-dependency](image-dependency/README.md) gets information about an
+  AMI by name.
+* [route53-dependency](route53-dependency/README.md) gets information about a
+  Hosted Zone by name.
+* [stack-dependency](stack-dependency/README.md) gets the outputs from another
+  stack by name.
+* [vpc-dependency](vpc-dependency/README.md) gets information about a VPC by
+  name.
 
 
 
