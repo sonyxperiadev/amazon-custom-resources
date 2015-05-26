@@ -17,7 +17,8 @@ simplifies the re-use of templates across Amazon accounts.
   stack by name.
 * [vpc-dependency](vpc-dependency/README.md) gets information about a VPC by
   name.
-
+* [certificate-dependency](certificate-dependency/README.md) gets information
+  about a certificate by name.
 
 
 

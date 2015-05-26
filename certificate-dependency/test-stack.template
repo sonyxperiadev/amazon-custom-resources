@@ -1,0 +1,36 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Test Stack for CertificateDependency",
+
+  "Resources": {
+    "Certificate": {
+      "Type": "Custom::CertificateDependency",
+      "Properties": {
+        "ServiceToken": { "Fn::Join": [ "", [
+          "arn:aws:lambda:",
+          { "Ref": "AWS::Region" },
+          ":",
+          { "Ref": "AWS::AccountId" },
+          ":function:certificateDependency"
+        ] ] },
+        "CertificateName": "star_lifelog-dev_sonymobile_com_201505"
+      }
+    }
+  },
+
+  "Outputs": {
+    "CertificateId": {
+      "Value": {
+        "Fn::GetAtt": [ "Certificate", "ServerCertificateId" ]
+      },
+      "Description": "Certificate Id"
+    },
+    "CertificateArn": {
+      "Value": {
+        "Fn::GetAtt": [ "Certificate", "Arn" ]
+      },
+      "Description": "Certificate Arn"
+    }
+  }
+}
+

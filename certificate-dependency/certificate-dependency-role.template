@@ -1,0 +1,58 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Role for CertificateDependency",
+  "Parameters": {
+    "RoleName": {
+      "Description": "Name of the Role",
+      "Type": "String",
+      "Default": "CertificateDependency"
+    },
+    "Actions": {
+      "Description": "Actions for the policy",
+      "Type": "CommaDelimitedList",
+      "Default": "logs:*,iam:ListServerCertificates"
+    }
+
+  },
+  "Resources": {
+    "Role": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version" : "2012-10-17",
+          "Statement": [ {
+            "Effect": "Allow",
+            "Principal": {
+              "Service": [ "lambda.amazonaws.com" ]
+            },
+            "Action": [ "sts:AssumeRole" ]
+          } ]
+        },
+        "Path": "/",
+        "Policies": [ {
+          "PolicyName": { "Ref": "RoleName"},
+          "PolicyDocument": {
+            "Version" : "2012-10-17",
+            "Statement": [
+              {
+                "Effect": "Allow",
+                "Action": { "Ref": "Actions"},
+                "Resource": "*"
+              }
+            ]
+          }
+        } ]
+      }
+    }
+  },
+  "Outputs": {
+    "Role": {
+      "Value": {"Ref":"Role"},
+      "Description": "Role"
+    },
+    "RoleArn": {
+      "Value": {"Fn::GetAtt": ["Role", "Arn"]},
+      "Description": "Role Arn"
+    }
+  }
+}
