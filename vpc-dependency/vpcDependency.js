@@ -47,7 +47,7 @@ function vpcDependency(properties, callback) {
 vpcDependency.handler = function(event, context) {
   console.log(JSON.stringify(event, null, '  '));
 
-  if (event.RequestType == 'Delete' || event.RequestType == 'Update') {
+  if (event.RequestType == 'Delete') {
     return sendResponse(event, context, "SUCCESS");
   }
 
