@@ -47,3 +47,10 @@ provide the parameters to the instance by saving them to an environment file
 and, if you use Docker, to provide them to the container with `docker run
 --env-file`
 
+
+## Installation
+
+```
+git clone repo
+./deploy-all.sh
+```
