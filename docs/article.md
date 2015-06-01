@@ -6,15 +6,16 @@ SecurityGroups, IAM resources, LoadBalancers, etc. take a long time to start.
 
 To simplify configuration and to speed things up we make heavy use of
 Lambda-backed Custom Resources. We use them for depending on other stacks,
-getting info about VPC, Route53, certificates and Images. We also have a
-resource for getting ElastiCache endpoints for our Redis services since
+getting info about VPC, Route53, certificates and AMIs. We also have a
+resource for getting ElastiCache endpoints to our Redis services since
 CloudFormation does not provide it.
 
-The code in this article is based on the code from [Amazon Lambda-backed Custom Resources](http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-custom-resources-lambda.html)
+The code in this article is based on code from [Amazon Lambda-backed Custom
+Resources](http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-custom-resources-lambda.html)
 
 ## The Custom Resource Invocation
 
-When CloudFormation invokes a Custom Resource it send a request that looks like
+When CloudFormation invokes a Custom Resource it send a request which looks like
 this:
 
 ```js
@@ -75,7 +76,7 @@ The interesting parts here are:
   the name `route53Dependency`. This function name corresponds to the name of
   the function used when creating the function with `aws lambda
   create-function --function-name route53Dependency`
-* `DomainName` - is a custom parameter which I will read from the event and use
+* `DomainName` - is a custom parameter which we will read from the event and use
   to lookup the domain in Route53.
 
 
@@ -84,12 +85,12 @@ The interesting parts here are:
 A Custom Resource Lambda can be split into three major parts.
 
 * The handler handles the event and invokes the domain specific function.
-* The domain specific function call the AWS function and get the requested
+* The domain specific function calls the AWS function and gets the requested
   information.
-* The response` is sent back to CloudFormation by PUTing to the
+* The response is sent back to CloudFormation by `PUT`ing to the
   provided `ResponseURL`
 
-The handler and response code is the same for all our Custom Resources.
+The handler and response code is almost the same for all our Custom Resources.
 
 
 ### The handler
@@ -115,8 +116,8 @@ The handler starts by logging the event, nice to have for debugging. It ignores
 things up. It then invokes the domain function with `event.ResourceProperties`,
 checks the result and uses `sendResponse` to send the reply.
 
-Lambda functions have to be invoked as properties, in my case `handler`, and I
-usually set the handler as a property on the domain function. This is just my
+Lambda functions have to be invoked as properties, in this case `handler`.
+I usually set the handler as a property on the domain function. This is just my
 preference, it is not required.
 
 
@@ -156,10 +157,10 @@ function route53Dependency(properties, callback) {
 The domain function starts out with checking for required properties and calls
 the callback with an error in case they are not valid or available.
 
-I require the SDK and invoke `listHostedZones`, check that exactly one domain
+We require the SDK and invoke `listHostedZones`, check that exactly one domain
 matches and return the object after cleaning it up. Custom Resources only
 supports returning string values and if you try to return objects such as
-`Config` above. In my case I don't care about this value and I just delete it.
+`Config` above. In this case we don't care about this value and just delete it.
 
 ### The Response
 
@@ -299,7 +300,7 @@ read an image name instead of an AMI ID.
 ### Route53 Dependency
 
 `route53Dependency` looks up information about hosted zone by domain name.
-Again, nicer to have that a cryptic zone id.
+Again, nicer to have than a cryptic zone id.
 
 ### VPC Dependency
 
