@@ -47,6 +47,10 @@ provide the parameters to the instance by saving them to an environment file
 and, if you use Docker, to provide them to the container with `docker run
 --env-file`
 
+### Echo Dependency
+
+[echo-dependency](echo-dependency/README.md) returns its inputs as outputs. Can
+be used to force an update of a stack.
 
 ## Installation
 

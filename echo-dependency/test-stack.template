@@ -1,0 +1,30 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Test Stack for EchoDependency",
+
+  "Resources": {
+    "Echo": {
+      "Type": "Custom::EchoDependency",
+      "Properties": {
+        "ServiceToken": { "Fn::Join": [ "", [
+          "arn:aws:lambda:",
+          { "Ref": "AWS::Region" },
+          ":",
+          { "Ref": "AWS::AccountId" },
+          ":function:certificateDependency"
+        ] ] },
+        "ModifyDate": "2015-05-16:1432"
+      }
+    }
+  },
+
+  "Outputs": {
+    "EchoModifyDate": {
+      "Value": {
+        "Fn::GetAtt": [ "Echo", "ModifyDate" ]
+      },
+      "Description": "Echo ModifyDate"
+    }
+  }
+}
+
