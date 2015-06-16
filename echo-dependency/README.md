@@ -22,7 +22,7 @@ The `Custom::EchoDependency` takes any parameters and returns them as outputs.
 
 ```
 {
-  "ModifyDate": "2015-05-20-1433"
+  "ModifiedDate": "2015-05-20-1433"
 }
 ```
 
@@ -30,7 +30,7 @@ The `Custom::EchoDependency` takes any parameters and returns them as outputs.
 
 ```
 "Parameters": {
-  "ModifyDate": {
+  "ModifiedDate": {
     "Description": "Date used to force stack update",
     "Type": "String",
     "Default": "never"
@@ -47,15 +47,15 @@ The `Custom::EchoDependency` takes any parameters and returns them as outputs.
         { "Ref": "AWS::AccountId" },
         ":function:echoDependency"
       ] ] },
-      "ModifyDate": { "Ref": "ModifyDate" }
+      "ModifiedDate": { "Ref": "ModifiedDate" }
     }
   },
   "Outputs": {
-    "EchoModifyDate": {
+    "EchoModifiedDate": {
       "Value": {
-        "Fn::GetAtt": [ "Echo", "ModifyDate" ]
+        "Fn::GetAtt": [ "Echo", "ModifiedDate" ]
       },
-      "Description": "Echo ModifyDate"
+      "Description": "Echo ModifiedDate"
     }
   }
 }

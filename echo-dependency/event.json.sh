@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function_arn=$1
-modify_date=$2
+modified_date=$2
 cat <<EOT
 {
   "RequestType": "Create",
@@ -13,7 +13,7 @@ cat <<EOT
   "ResourceType": "Custom::EchoDependency",
   "ResourceProperties": {
     "ServiceToken": "$function_arn",
-    "ModifyDate": "$modify_date"
+    "ModifiedDate": "$modified_date"
   }
 }
 EOT

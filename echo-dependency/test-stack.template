@@ -13,17 +13,17 @@
           { "Ref": "AWS::AccountId" },
           ":function:certificateDependency"
         ] ] },
-        "ModifyDate": "2015-05-16:1432"
+        "ModifiedDate": "2015-05-16:1432"
       }
     }
   },
 
   "Outputs": {
-    "EchoModifyDate": {
+    "EchoModifiedDate": {
       "Value": {
-        "Fn::GetAtt": [ "Echo", "ModifyDate" ]
+        "Fn::GetAtt": [ "Echo", "ModifiedDate" ]
       },
-      "Description": "Echo ModifyDate"
+      "Description": "Echo ModifiedDate"
     }
   }
 }
