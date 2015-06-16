@@ -15,7 +15,9 @@ template="$2"
 
 stack_exists() {
   echo "Checking for stack $stack_name"
-  aws cloudformation describe-stacks --stack-name $stack_name > /dev/null 2>&1
+  aws cloudformation describe-stacks \
+    --region $region \
+    --stack-name $stack_name > /dev/null 2>&1
 }
 
 create_stack() {

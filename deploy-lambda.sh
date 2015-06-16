@@ -25,6 +25,7 @@ description="Cloud Formation Custom Resource: $func"
 
 role_arn() {
   aws cloudformation describe-stacks \
+    --region $region \
     --stack-name $role_stack_name \
     | jq '.Stacks[0].Outputs[]| select(.OutputKey=="RoleArn")|.OutputValue' \
     | tr -d \"
@@ -36,7 +37,9 @@ zip_package() {
 
 function_exists() {
   echo "Checking for function $func"
-  aws lambda get-function --function-name $func > /dev/null 2>&1
+  aws lambda get-function \
+    --region $region \
+    --function-name $func > /dev/null 2>&1
 
 }
 

@@ -15,6 +15,7 @@ param="$3"
 
 function_arn() {
   aws lambda get-function-configuration \
+    --region $region \
     --function-name $func \
     | jq '.FunctionArn' \
     | tr -d \"
