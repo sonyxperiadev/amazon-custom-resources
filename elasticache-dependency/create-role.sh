@@ -1,6 +1,6 @@
 #!/bin/bash
 
-current_dir=`readlink -f ${BASH_SOURCE[0]%/*.sh}`
+current_dir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 template="$current_dir/elasticache-dependency-role.template"
 stack_name='elasticache-dependency-support'
 
