@@ -1,5 +1,5 @@
 #!/bin/bash
-current_dir=`readlink -f ${BASH_SOURCE[0]%/*.sh}`
+current_dir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
 func='echoDependency'
 event_script="$current_dir/event.json.sh"
