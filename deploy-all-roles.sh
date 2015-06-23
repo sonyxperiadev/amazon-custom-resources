@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for f in */create-roles.sh; do
+for f in */create-role.sh; do
   $f
 done
 
