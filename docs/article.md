@@ -350,6 +350,6 @@ The following script are available for each resource:
 
 CloudFormation extended with Custom Resources is a powerful tool that enables
 us to setup almost all our AWS resources. Currently we are not deploying our
-Lambdas via CloudFormation but we are working on it. [Stay tuned!](Github
-subscribe)
+Lambdas via CloudFormation but we are working on it.
+[Stay tuned!](https://github.com/sonyxperiadev/amazon-custom-resources)
 
