@@ -1,14 +1,22 @@
-# Extending Cloudformation with Lambda-Backed Custom Resources
+# Extending CloudFormation with Lambda-Backed Custom Resources
 
-At Sony Mobile in Lund we are using CloudFormation extensively. Bringing up a
-full stack with everything included takes quite a while. ElastiCache,
-SecurityGroups, IAM resources, LoadBalancers, etc. take a long time to start.
+CloudFormation stacks are very nice for setting up complete server environments.
+But, there are a few problems.
 
-To simplify configuration and to speed things up we make heavy use of
-Lambda-backed Custom Resources. We use them for depending on other stacks,
-getting info about VPC, Route53, certificates and AMIs. We also have a
-resource for getting ElastiCache endpoints to our Redis services since
-CloudFormation does not provide it.
+* Keeping all resources in one stack may not be possible since some resources,
+  such as Kineses may be needed by used by multiple stacks.
+* If your stack depends on external resources you have to maintain these
+  resources separately and send them as parameters when creating new stacks.
+* If you have multiple accounts or environments you have to maintain one
+  configuration for each.
+
+Using Custom Resources to extend the native functionality of CloudFormation solves
+these problems.
+
+At Sony Mobile in Lund we make heavy use of Lambda-backed Custom Resources. We
+use them for depending on other stacks, getting info about VPC, Route53,
+certificates and AMIs. We also have a resource for getting Elasticache
+endpoints to our Redis services since CloudFormation does not provide it.
 
 The code in this article is based on code from [Amazon Lambda-backed Custom
 Resources](http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-custom-resources-lambda.html)
@@ -289,7 +297,7 @@ We have implemented the following Custom Resources.
 When CloudFormation creates a Redis-backed Elasticache Cluster it does not
 provide the endpoints to the stack. This forces us to write logic in the client
 to look up the endpoints or to look them up manually and provide them as
-configuration. `elasticacheDependency` gets information about elasticache
+configuration. `elasticacheDependency` gets information about Elasticache
 clusters including endpoints.
 
 ### Image Dependency
@@ -324,9 +332,9 @@ and, if you use Docker, to provide them to the container with `docker run
 --env-file`
 
 
-## Usage
+## Open Source
 
-All our custom resources are Open Sourced and can be accessed at the [Sony
+All our custom resources are open sourced and can be accessed at the [Sony
 Experia Dev Github account](https://github.com/sonyxperiadev/amazon-custom-resources).
 
 The following script are available for each resource:
@@ -338,4 +346,10 @@ The following script are available for each resource:
   the function with CloudFormation.
 
 
-Enjoy!
+## Conclusion
+
+CloudFormation extended with Custom Resources is a powerful tool that enables
+us to setup almost all our AWS resources. Currently we are not deploying our
+Lambdas via CloudFormation but we are working on it. [Stay tuned!](Github
+subscribe)
+
