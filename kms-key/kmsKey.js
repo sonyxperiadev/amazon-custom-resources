@@ -7,6 +7,7 @@ function kmsKey(properties, callback) {
   if (!properties.Description) {
     callback("Description not specified");
   }
+  console.log("Creating new key");
   kms.createKey({Description: properties.Description}, function(err, data) {
     if (err) callback(err, null);
     else callback(null, {KeyId: data.KeyMetadata.KeyId, Arn: data.KeyMetadata.Arn});
@@ -14,6 +15,7 @@ function kmsKey(properties, callback) {
 }
 
 function kmsKeyDescribe(keyId, callback) {
+  console.log("describeKey");
   kms.describeKey({KeyId: keyId}, function(err, data) {
     if (err) callback(err, {KeyId: keyId});
     else callback(null, {KeyId: data.KeyMetadata.KeyId, Arn: data.KeyMetadata.Arn});
@@ -38,17 +40,19 @@ kmsKey.handler = function(event, context) {
       var status = err ? 'FAILED' : 'SUCCESS';
       return sendResponse(event, context, status, result, err);
     });
-  }
-  if (event.RequestType == 'Delete') {
+  } else if (event.RequestType == 'Delete') {
     kmsKeyDisable(event.PhysicalResourceId, function(err, result) {
       var status = err ? 'FAILED' : 'SUCCESS';
       return sendResponse(event, context, status, result, err);
     });
-  } else {
+  } else if (event.RequestType == 'Create') {
     kmsKey(event.ResourceProperties, function(err, result) {
       var status = err ? 'FAILED' : 'SUCCESS';
       return sendResponse(event, context, status, result, err);
     });
+  } else {
+    console.log("Unknown RequestType=" + event.RequestType);
+    return sendResponse(event, context, 'FAILED', {KeyId: event.PhysicalResourceId}, err);
   }
 };
 
