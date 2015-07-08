@@ -13,6 +13,13 @@ function kmsKey(properties, callback) {
   });
 }
 
+function kmsKeyDescribe(keyId, callback) {
+  kms.describeKey({KeyId: keyId}, function(err, data) {
+    if (err) callback(err, {KeyId: keyId});
+    else callback(null, {KeyId: data.KeyMetadata.KeyId, Arn: data.KeyMetadata.Arn});
+  });
+}
+
 function kmsKeyDisable(keyId, callback) {
   var params = {
     KeyId: keyId
@@ -27,7 +34,10 @@ kmsKey.handler = function(event, context) {
   console.log(JSON.stringify(event, null, '  '));
 
   if (event.RequestType == 'Update') {
-    return sendResponse(event, context, "SUCCESS");
+    kmsKeyDescribe(event.PhysicalResourceId, function(err, result) {
+      var status = err ? 'FAILED' : 'SUCCESS';
+      return sendResponse(event, context, status, result, err);
+    });
   }
   if (event.RequestType == 'Delete') {
     kmsKeyDisable(event.PhysicalResourceId, function(err, result) {

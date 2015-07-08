@@ -10,7 +10,7 @@
     "Actions": {
       "Description": "Actions for the policy",
       "Type": "CommaDelimitedList",
-      "Default": "logs:*,kms:CreateKey,kms:DisableKey"
+      "Default": "logs:*,kms:CreateKey,kms:DisableKey,kms:DescribeKey"
     }
 
   },
