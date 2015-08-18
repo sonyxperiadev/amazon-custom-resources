@@ -47,10 +47,6 @@ function vpcDependency(properties, callback) {
 vpcDependency.handler = function(event, context) {
   console.log(JSON.stringify(event, null, '  '));
 
-  if (event.RequestType == 'Delete') {
-    return sendResponse(event, context, "SUCCESS");
-  }
-
   vpcDependency(event.ResourceProperties, function(err, result) {
     var status = err ? 'FAILED' : 'SUCCESS';
     return sendResponse(event, context, status, result, err);
