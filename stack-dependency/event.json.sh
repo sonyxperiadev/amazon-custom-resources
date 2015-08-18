@@ -13,7 +13,8 @@ cat <<EOT
   "ResourceType": "Custom::NetworkInfo",
   "ResourceProperties": {
     "ServiceToken": "$function_arn",
-    "StackName": "$stack_name"
+    "StackName": "$stack_name",
+    "Excludes": ["Role", "Environment"]
   }
 }
 EOT

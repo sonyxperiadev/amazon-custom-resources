@@ -20,13 +20,17 @@ The `Custom::StackDependency` refers to a `StackName` that is sent to the
 Lambda function and is used to lookup the outputs from the selected stack. If
 no stack is found `FAILED` is returned.
 
+It is also possible to include an `Excludes` parameter which takes an array of
+properties that will be excluded from the response. This can be used to limit
+the size of the response. Amazon has a limit of 4096 bytes for the response.
+
 The outputs from the `Custom::StackDependency` can be referred with `Fn:GetAtt`.
 
 Example: `"Fn::GetAtt": ["IamStack", "InstanceProfile"]`
 
 In addition to the normal outputs from a stack, we also get access to all the
 environment variables formatted as a Unix `env-file`. They are available with
-the property `Environment`.
+the property `Environment`. `Environment can also be excluded with `Excludes`.
 
 ### Example
 
@@ -75,7 +79,8 @@ Environment.
         { "Ref": "AWS::AccountId" },
         ":function:stackDependency"
       ] ] },
-      "StackName": { "Ref": "IamRoleStack" }
+      "StackName": { "Ref": "IamRoleStack" },
+      "Excludes": ["RoleArn"]
     }
   },
   "AppInstance": {

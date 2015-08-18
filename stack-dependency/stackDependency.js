@@ -3,6 +3,7 @@
 function stackDependency(properties, callback) {
   if (!properties.StackName)
     callback("Stack name not specified");
+  var excludes = properties.Excludes || [];
 
   var aws = require("aws-sdk");
   var cfn = new aws.CloudFormation();
@@ -16,10 +17,12 @@ function stackDependency(properties, callback) {
 
     var environmentVars = [];
     data.Stacks[0].Outputs.forEach(function(output) {
+      if (excludes.indexOf(output.OutputKey) != -1) return;
       responseData[output.OutputKey] = output.OutputValue;
       environmentVars.push(output.OutputKey + '=' + output.OutputValue);
     });
-    responseData.Environment = environmentVars.join('\n');
+    if (excludes.indexOf('Environment') == -1)
+      responseData.Environment = environmentVars.join('\n');
     return callback(null, responseData);
   });
 }
