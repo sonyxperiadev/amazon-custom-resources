@@ -30,7 +30,7 @@ Example: `"Fn::GetAtt": ["IamStack", "InstanceProfile"]`
 
 In addition to the normal outputs from a stack, we also get access to all the
 environment variables formatted as a Unix `env-file`. They are available with
-the property `Environment`. `Environment can also be excluded with `Excludes`.
+the property `Environment`. `Environment` can also be excluded with `Excludes`.
 
 ### Example
 
