@@ -13,7 +13,8 @@ cat <<EOT
   "ResourceType": "Custom::VpcDependency",
   "ResourceProperties": {
     "ServiceToken": "$function_arn",
-    "VpcName": "$vpc_name"
+    "VpcName": "$vpc_name",
+    "OnlyDefaultSubnets": "true"
   }
 }
 EOT

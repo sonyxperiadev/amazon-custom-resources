@@ -16,9 +16,13 @@ used to get VPCs via a Cloud Formation Custom Resource.
 Use the function inside your Cloud Formation template by declaring a custom
 resource, `Custom::VpcDependency`.
 
-The `Custom::VpcDependency` refers to a `VpcName` that is sent to the
-Lambda function and is used to lookup a VPC. If
-no VPC or more than one is found `FAILED` is returned.
+The `Custom::VpcDependency` refers to a `VpcName` that is sent to the Lambda
+function and is used to lookup a VPC. If no VPC or more than one is found
+`FAILED` is returned.
+
+It is also possible to send a filter parameter `OnlyDefaultSubnets` to limit
+the returned subnets to the ones which are default in their availability zones.
+This can be used to only get one subnet per zone.
 
 The outputs from the `Custom::VpcDependency` can be referred with `Fn:GetAtt`.
 
@@ -66,7 +70,8 @@ Example: `"Fn::GetAtt": ["Vpc", "VpcId"]`
         { "Ref": "AWS::AccountId" },
         ":function:vpcDependency"
       ] ] },
-      "DomainName": { "Ref": "VpcName" }
+      "VpcName": { "Ref": "VpcName" },
+      "OnlyDefaultSubnets": "true"
     }
   }
   "Outputs": {

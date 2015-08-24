@@ -30,7 +30,10 @@ function vpcDependency(properties, callback) {
       return callback('Exactly one matching vpc is allowed ' + matching);
     var match = matching[0];
     delete match.Tags;
-    var params = {Filters: [{Name: 'vpc-id', Values: [match.VpcId] }]};
+    var filters = [{Name: 'vpc-id', Values: [match.VpcId] }];
+    if (properties.OnlyDefaultSubnets)
+      filters.push({Name: 'default-for-az', Values: ['true']});
+    var params = {Filters: filters};
     ec2.describeSubnets(params, function(err, data) {
       console.log('Subnets', params, data);
       var subnetIds = [];
