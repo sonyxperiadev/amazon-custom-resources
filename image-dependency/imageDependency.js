@@ -9,8 +9,9 @@ function imageDependency(properties, callback) {
 
   var responseData = {};
   console.log('imageDependency', properties);
-  var params = { ExecutableUsers: ['self'], Filters: [
-    {Name: 'name', Values: [ properties.ImageName ] }
+  var params = { Filters: [
+    {Name: 'name', Values: [ properties.ImageName ] },
+    {Name: 'is-public', Values: [ 'false' ] }
   ]};
   ec2.describeImages(params, function(err, data) {
     console.log('describeImages', err, data);
