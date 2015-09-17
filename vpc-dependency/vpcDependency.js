@@ -69,7 +69,7 @@ function sendResponse(event, context, status, data, err) {
     StackId: event.StackId,
     RequestId: event.RequestId,
     LogicalResourceId: event.LogicalResourceId,
-    PhysicalResourceId: context.logStreamName,
+    PhysicalResourceId: 'vpcDependency-' + event.ResourceProperties.VpcName,
     Status: status,
     Reason: getReason(err) + " See details in CloudWatch Log: " + context.logStreamName,
     Data: data
