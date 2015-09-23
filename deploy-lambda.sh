@@ -11,17 +11,17 @@ region='eu-west-1'
 if [ $# -lt 2 ]
 then
   echo 'Missing required parameters'
-  echo "Usage $0 <function> <role_stack_name>"
+  echo "Usage $0 <function> <role_stack_name> [zip] [timeout]"
   exit 1
 fi
 
 func="$1"
 role_stack_name="$2"
+zip=${3:-"./${func}.zip"}
+timeout=${4:-"10"}
 
 file="./${func}.js"
-zip="./${func}.zip"
 description="Cloud Formation Custom Resource: $func"
-
 
 role_arn() {
   aws cloudformation describe-stacks \
@@ -54,7 +54,7 @@ create_function() {
     --function-name $func  \
     --description "$description" \
     --handler ${func}.handler \
-    --timeout 10 \
+    --timeout $timeout \
     --memory-size 128 \
     --zip-file fileb://$zip
 }

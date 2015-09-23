@@ -1,0 +1,27 @@
+{
+  "name": "lambda-with-config",
+  "version": "1.0.0",
+  "description": "A Lambda function which implements a Custom Resource for CloudFormation that deploys lambdas together with config files.",
+  "main": "lambdaWithConfig.js",
+  "scripts": {
+    "test": "mocha",
+    "test-watch": "mocha -w"
+  },
+  "author": "Sony Mobile Communications",
+  "license": "GPLv3",
+  "dependencies": {
+    "bluebird": "^2.10.0",
+    "exec": "^0.2.1",
+    "lodash": "^3.10.1",
+    "node-uuid": "^1.4.3",
+    "request-promise": "^0.4.3",
+    "tmp": "0.0.27"
+  },
+  "devDependencies": {
+    "aws-sdk": "^2.2.3",
+    "chai": "^3.3.0",
+    "mocha": "^2.3.3",
+    "mockery": "^1.4.0",
+    "node-zip": "^1.1.1"
+  }
+}

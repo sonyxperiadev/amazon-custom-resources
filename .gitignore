@@ -1,3 +1,4 @@
 *.log
 *.zip
-
+node_modules
+target
