@@ -1,0 +1,37 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Test Stack for Ecs Task",
+
+  "Resources": {
+    "Task": {
+      "Type": "Custom::EcsTask",
+      "Properties": {
+        "ServiceToken": { "Fn::Join": [ "", [
+          "arn:aws:lambda:",
+          { "Ref": "AWS::Region" },
+          ":",
+          { "Ref": "AWS::AccountId" },
+          ":function:ecsTask"
+        ] ] },
+        "Image": "andersjanmyr/counter",
+        "Name": "unstable-andersjanmyr-counter",
+        "ParamsEnvFile": "Dingo=elefant\nKatt=hund\n",
+        "StackOutputEnvFile": "Tapir=aardvark\nKatt=cat"
+      }
+    }
+  },
+
+  "Outputs": {
+    "TaskHostPort": {
+      "Value": {
+        "Fn::GetAtt": [ "Task", "HostPort" ]
+      }
+    },
+    "TaskDefinitionArn": {
+      "Value": {
+        "Fn::GetAtt": [ "Task", "TaskDefinitionArn" ]
+      }
+    }
+  }
+}
+
