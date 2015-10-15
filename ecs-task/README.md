@@ -25,7 +25,9 @@ The `Custom::EcsTask` can take the following parameters.
 
 ```
 {
-  TaskDefinitionArn: 'arn:aws:ecs:eu-west-1:445573518738:task-definition/ecscompose-lifelog-deploy:1',
+  Family: 'unstable-andersjanmyr-counter',
+  Revison: 16,
+  TaskDefinitionArn: 'arn:aws:ecs:eu-west-1:445573518738:task-definition/ecscompose-lifelog-deploy:16',
   HostPort: '39055'
 }
 ```
