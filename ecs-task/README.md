@@ -15,11 +15,14 @@ used to deploy docker tasks to an ECS cluster.
 Use the function inside your Cloud Formation template by declaring a custom
 resource, `Custom::EcsTask`.
 
-The `Custom::EcsTask` can take the following parameters.
+The `Custom::EcsTask` takes the same parameters [AWS::ECS::TaskDefinition](http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ecs-taskdefinition.html)
 
-* *Image*- The image to use when starting the task
-* *Name* - The name of the running task
-* *envFiles* - An array of environment files.
+But, it also takes an `envFiles` property in the `containerDefinitions`
+section.
+
+It also auto generates an available port for
+`containerDefinitions[].portMappings.hostPort` if this property is set to 0.
+
 
 ### Example Output
 
@@ -47,10 +50,41 @@ The `Custom::EcsTask` can take the following parameters.
         { "Ref": "AWS::AccountId" },
         ":function:ecsTask"
       ] ] },
-      "Image": "andersjanmyr/counter",
-      "Name": "unstable-andersjanmyr-counter",
-      "ParamsEnvFile": "Dingo=elefant\nKatt=hund\n",
-      "StackOutputsEnvFile": "Tapir=aardvark\nKatt=cat"
+      "containerDefinitions": [
+        {
+          "envFiles": [
+            "Dingo=elefant\nKatt=hund\n",
+            "Tapir=aardvark\nKatt=cat"
+          ],
+          "environment": [
+            {
+              "name": "STATSD_HOST",
+              "value": "dockerhost"
+            }
+          ],
+          "essential": true,
+          "extraHosts": [{
+            "hostname": "dockerhost",
+            "ipAddress": "172.14.42.1"
+          }],
+          "image": "andersjanmyr/counter",
+          "logConfiguration": {
+            "logDriver": "json-file",
+            "options": {
+              "max-size": "128m",
+              "max-file": "8"
+            }
+          },
+          "memory": 512,
+          "name": "unstable-andersjanmyr-counter",
+          "portMappings": [
+            {
+              "containerPort": 80,
+              "hostPort": 0 // auto generate an available port.
+            }
+          ]
+        }
+      ]
     }
   }
   "Outputs": {

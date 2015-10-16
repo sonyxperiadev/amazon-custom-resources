@@ -13,10 +13,42 @@
           { "Ref": "AWS::AccountId" },
           ":function:ecsTask"
         ] ] },
-        "Image": "andersjanmyr/counter",
-        "Name": "unstable-andersjanmyr-counter",
-        "ParamsEnvFile": "Dingo=elefant\nKatt=hund\n",
-        "StackOutputEnvFile": "Tapir=aardvark\nKatt=cat"
+        "ContainerDefinitions": [
+          {
+            "envFiles": [
+              "Dingo=elefant\nKatt=hund\n",
+              "Tapir=aardvark\nKatt=cat"
+            ],
+            "environment": [
+              {
+                "name": "STATSD_HOST",
+                "value": "dockerhost"
+              }
+            ],
+            "essential": true,
+            "extraHosts": [{
+              "hostname": "dockerhost",
+              "ipAddress": "172.14.42.1"
+            }],
+            "family": "ecs",
+            "image": "andersjanmyr/counter",
+            "logConfiguration": {
+              "logDriver": "json-file",
+              "options": {
+                "max-size": "128m",
+                "max-file": "8"
+              }
+            },
+            "memory": 512,
+            "name": "unstable-andersjanmyr-counter",
+            "portMappings": [
+              {
+                "containerPort": 80,
+                "hostPort": 4444
+              }
+            ]
+          }
+        ]
       }
     }
   },

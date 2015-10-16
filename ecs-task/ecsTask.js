@@ -12,100 +12,40 @@ var ecs = new aws.ECS({region: 'eu-west-1'});
 var elb = new aws.ELB({region: 'eu-west-1'});
 
 function ecsTask(properties, callback) {
-  if (!properties.Name)
-    return callback("Name not specified");
+  if (!properties.containerDefinitions)
+    return callback("containerDefinitions not specified");
 
   console.log('ecsTask', properties);
-  var options = {
-    image: properties.Image,
-    name: properties.Name,
-    envFiles: properties.EnvFiles
-  };
-  registerTaskDefinition(options, function(err, taskDefinition) {
-    if (err) return callback(err);
-    return callback(null, toOutputs(taskDefinition));
-  });
-}
-
-function ecsTaskRemove(properties, callback) {
-  console.log('ecsTaskRemove', properties);
-  if (!properties.Name)
-    return callback("Name not specified");
-  var options = {
-    taskDefinition: properties.Name
-  };
-  ecs.describeTaskDefinition(options, function(err, response) {
-    if (err) return callback(err);
-    var options = {
-      taskDefinition: response.taskDefinition.taskDefinitionArn
-    };
-    ecs.deregisterTaskDefinition(options, function(err, response) {
-      if (err) return callback(err);
-      return callback(null, toOutputs(response.taskDefinition));
-    });
-  });
-}
-
-
-
-function registerTaskDefinition(options, callback) {
-  var localEnv = [{ name: 'STATSD_HOST', value: 'dockerhost' }];
-  var envs = options.envFiles.map(envFileToEnvironment);
-  var environment = localEnv.concat.apply(envs[0], envs[1]);
-  console.log('environment', environment);
-  options.environment = environment;
-  findFreePort(function(err, port) {
-    options.port = port;
-    var params = getTaskDefinitionParams(options);
-    console.log('registerTaskDefinition', params.containerDefinitions[0]);
-    ecs.registerTaskDefinition(params, function(err, data) {
-      if (err)
-        console.log(err, err.stack);
-      else
-        console.log(data);
-      callback(err, data.taskDefinition);
-    });
-  });
-}
-
-function getTaskDefinitionParams(options) {
-  var params = {
-    containerDefinitions: [
-      {
-        environment: options.environment,
-        essential: true,
-        extraHosts: [{
-          hostname: 'dockerhost',
-          ipAddress: '172.14.42.1'
-        }],
-        image: options.image,
-        memory: 512,
-        name: options.name,
-        logConfiguration: {
-          logDriver: 'json-file',
-          options: {
-            "max-size": "128m",
-            "max-file": "8"
-          }
-        },
-        portMappings: [
-          {
-            containerPort: 80,
-            hostPort: options.port,
-          },
-        ]
+  delete properties.ServiceToken;
+  properties.family = properties.containerDefinitions[0].name;
+  properties.containerDefinitions.forEach(function(def) {
+    if (def.envFiles) {
+      var envs = def.envFiles.map(envFileToEnvironment);
+      var environment = def.environment || [];
+      environment = environment.concat.apply(environment, envs);
+      def.environment = environment;
+      delete def.envFiles;
+      if (def.portMappings) {
+        def.portMappings.forEach(function(mapping) {
+          if (mapping.hostPort == 0)
+            mapping.hostPort = findFreePort();
+        });
       }
-    ],
-    family: options.name
-  };
-
-  if (aws.VERSION < '2.2.9') {
-    console.log('Trimming extraHosts and logConfiguration due to old Node Version < 2.2.9', aws.VERSION);
-    delete params.containerDefinitions[0].extraHosts;
-    delete params.containerDefinitions[0].logConfiguration;
-  }
-
-  return params;
+      if (aws.VERSION < '2.2.9') {
+        console.log('Trimming extraHosts and logConfiguration due to old Node Version < 2.2.9', aws.VERSION);
+        delete properties.containerDefinitions[0].extraHosts;
+        delete properties.containerDefinitions[0].logConfiguration;
+      }
+    }
+  });
+  console.log('registerTaskDefinition', properties.containerDefinitions[0]);
+  ecs.registerTaskDefinition(properties, function(err, response) {
+    if (err)
+      console.log(err, err.stack);
+    else
+      console.log(response);
+    callback(err, toOutputs(response.taskDefinition));
+  });
 }
 
 function envFileToEnvironment(envFile) {
@@ -124,9 +64,31 @@ function envFileToEnvironment(envFile) {
   });
 }
 
-function findFreePort(callback) {
+function findFreePort() {
   var randomPort = Math.floor(Math.random() * 32000) + 32000;
-  process.nextTick(callback.bind(null, null, randomPort));
+  //process.nextTick(callback.bind(null, null, randomPort));
+  return randomPort;
+}
+
+
+
+function ecsTaskRemove(properties, callback) {
+  console.log('ecsTaskRemove', properties);
+  if (!properties.Name)
+    return callback("Name not specified");
+  var options = {
+    taskDefinition: properties.Name
+  };
+  ecs.describeTaskDefinition(options, function(err, response) {
+    if (err) return callback(err);
+    var options = {
+      taskDefinition: response.taskDefinition.taskDefinitionArn
+    };
+    ecs.deregisterTaskDefinition(options, function(err, response) {
+      if (err) return callback(err);
+      return callback(null, toOutputs(response.taskDefinition));
+    });
+  });
 }
 
 function toOutputs(taskDefinition) {
