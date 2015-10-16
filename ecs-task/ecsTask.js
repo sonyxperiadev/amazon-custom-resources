@@ -65,6 +65,7 @@ function envFileToEnvironment(envFile) {
 }
 
 function findFreePort() {
+  // TODO make sure that the port is actually free.
   var randomPort = Math.floor(Math.random() * 32000) + 32000;
   //process.nextTick(callback.bind(null, null, randomPort));
   return randomPort;
@@ -166,7 +167,6 @@ ecsTask.handler = function(event, context) {
 
   if (event.RequestType == 'Delete') {
     ecsTaskRemove(event.ResourceProperties, function(err, result) {
-      err = null;
       var status = err ? 'FAILED' : 'SUCCESS';
       return sendResponse(event, context, status, result, err);
     });
