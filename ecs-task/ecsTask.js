@@ -40,10 +40,11 @@ function ecsTask(properties, callback) {
   });
   console.log('registerTaskDefinition', properties.containerDefinitions[0]);
   ecs.registerTaskDefinition(properties, function(err, response) {
-    if (err)
+    if (err) {
       console.log(err, err.stack);
-    else
-      console.log(response);
+      return callback(err);
+    }
+    console.log(response);
     callback(err, toOutputs(response.taskDefinition));
   });
 }
