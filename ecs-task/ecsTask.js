@@ -24,6 +24,7 @@ function ecsTask(properties, callback) {
       var environment = def.environment || [];
       environment = environment.concat.apply(environment, envs);
       def.environment = environment;
+      def.essential = (def.essential === 'true')
       delete def.envFiles;
       if (def.portMappings) {
         def.portMappings.forEach(function(mapping) {

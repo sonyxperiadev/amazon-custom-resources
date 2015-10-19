@@ -30,7 +30,6 @@
               "hostname": "dockerhost",
               "ipAddress": "172.14.42.1"
             }],
-            "family": "ecs",
             "image": "andersjanmyr/counter",
             "logConfiguration": {
               "logDriver": "json-file",
