@@ -87,7 +87,7 @@ function ecsTaskRemove(properties, callback) {
       taskDefinition: response.taskDefinition.taskDefinitionArn
     };
     ecs.deregisterTaskDefinition(options, function(err, response) {
-      if (err) return callback(err);
+      if (err) return callback(null, err); // Don't fail deregister ever
       return callback(null, toOutputs(response.taskDefinition));
     });
   });
