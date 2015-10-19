@@ -116,9 +116,8 @@ function sendResponse(event, context, status, data, err) {
     StackId: event.StackId,
     RequestId: event.RequestId,
     LogicalResourceId: event.LogicalResourceId,
-    PhysicalResourceId: event.PhysicalResourceId ||
-      (data && 'ecsTask-' + data.TaskDefinitionArn) ||
-        event.ResourceProperties.Image,
+    PhysicalResourceId: 'ecsTask-' + ((data && data.TaskDefinitionArn)
+      || event.ResourceProperties.Image),
     Status: status,
     Reason: getReason(err) + " See details in CloudWatch Log: " + context.logStreamName,
     Data: data
