@@ -76,18 +76,16 @@ function findFreePort() {
 
 function ecsTaskRemove(properties, callback) {
   console.log('ecsTaskRemove', properties);
-  if (!properties.Name)
-    return callback("Name not specified");
   var options = {
     taskDefinition: properties.Name
   };
   ecs.describeTaskDefinition(options, function(err, response) {
-    if (err) return callback(err);
+    if (err) return callback(null, err); // Don't fail remove ever
     var options = {
       taskDefinition: response.taskDefinition.taskDefinitionArn
     };
     ecs.deregisterTaskDefinition(options, function(err, response) {
-      if (err) return callback(null, err); // Don't fail deregister ever
+      if (err) return callback(null, err); // Don't fail remove ever
       return callback(null, toOutputs(response.taskDefinition));
     });
   });
