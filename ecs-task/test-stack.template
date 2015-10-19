@@ -13,7 +13,7 @@
           { "Ref": "AWS::AccountId" },
           ":function:ecsTask"
         ] ] },
-        "ContainerDefinitions": [
+        "containerDefinitions": [
           {
             "envFiles": [
               "Dingo=elefant\nKatt=hund\n",
