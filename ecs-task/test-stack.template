@@ -42,7 +42,7 @@
             "name": "unstable-andersjanmyr-counter",
             "portMappings": [
               {
-                "containerPort": 80,
+                "containerPort": "80",
                 "hostPort": 4444
               }
             ]
