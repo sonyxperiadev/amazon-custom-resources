@@ -2,6 +2,7 @@
 
 var aws = require('aws-sdk');
 var parseArgs = require('minimist');
+var async = require('async');
 
 console.log('SDK', aws.VERSION);
 
@@ -13,50 +14,48 @@ var ecs = new aws.ECS({region: 'eu-west-1'});
 var elb = new aws.ELB({region: 'eu-west-1'});
 
 function ecsTask(properties, callback) {
-  var mappedHostPort, mappedContainerPort;
   if (!properties.containerDefinitions)
     return callback("containerDefinitions not specified");
 
   console.log('ecsTask', properties);
   delete properties.ServiceToken;
+  if (properties.containerDefinitions.length > 1)
+    return process.nextTick(callback.bind(null, 'Only one containerDefinition is allowed'));
   properties.family = properties.containerDefinitions[0].name;
-  properties.containerDefinitions.forEach(function(def) {
-    if (def.envFiles) {
-      var envs = def.envFiles.map(envFileToEnvironment);
-      var environment = def.environment || [];
-      environment = environment.concat.apply(environment, envs);
-      def.environment = environment;
-      def.essential = (def.essential === true || def.essential === 'true')
-      delete def.envFiles;
-    }
-    if (def.cliOptions) {
-      var options = parseCliOptions(def.cliOptions);
-      def.portMappings =  (def.portMappings||[]).concat(options.portMappings);
-      delete def.cliOptions;
-    }
-    if (def.portMappings) {
-      def.portMappings.forEach(function(mapping) {
-        if (mapping.hostPort == 80) {
-          if (mappedHostPort)
-            throw new Error('Only one hostPort can use 80');
-          mappedHostPort = findFreePort();
-          mapping.hostPort = mappedHostPort;
-          mappedContainerPort = mapping.containerPort;
-        }
-      });
-    }
-    console.log('def', def);
+  var def = properties.containerDefinitions[0];
+  if (!def.portMappings)
+    def.portMappings = [];
+  def.essential = (def.essential === true || def.essential === 'true')
+  convertEnvFiles(def);
+  convertCliOptions(def);
+  var host80Ports = def.portMappings.filter(function(pm) {
+    return pm.hostPort == 80;
   });
-  console.log('registerTaskDefinition', properties.containerDefinitions[0]);
-  ecs.registerTaskDefinition(properties, function(err, response) {
-    if (err) {
-      console.log(err, err.stack);
-      return callback(err);
-    }
-    console.log(response);
-    callback(err, toOutputs(response.taskDefinition,
-                            mappedHostPort, mappedContainerPort));
+  if (host80Ports.length > 1)
+    return process.nextTick(callback.bind(null, 'Only one hostPort can be 80'));
+  mapPort80ToFreePort(def, function(err, mapping) {
+    console.log('def', def, mapping);
+    console.log('registerTaskDefinition', properties.containerDefinitions[0]);
+    ecs.registerTaskDefinition(properties, function(err, response) {
+      if (err) {
+        console.log(err, err.stack);
+        return callback(err);
+      }
+      console.log(response);
+      callback(err, toOutputs(response.taskDefinition,
+                              mapping.hostPort, mapping.containerPort));
+    });
   });
+}
+
+function convertEnvFiles(def) {
+  if (def.envFiles) {
+    var envs = def.envFiles.map(envFileToEnvironment);
+    var environment = def.environment || [];
+    environment = environment.concat.apply(environment, envs);
+    def.environment = environment;
+    delete def.envFiles;
+  }
 }
 
 function envFileToEnvironment(envFile) {
@@ -75,11 +74,12 @@ function envFileToEnvironment(envFile) {
   });
 }
 
-function findFreePort() {
-  // TODO make sure that the port is actually free.
-  var randomPort = Math.floor(Math.random() * 32000) + 32000;
-  //process.nextTick(callback.bind(null, null, randomPort));
-  return randomPort;
+function convertCliOptions(def) {
+  if (def.cliOptions) {
+    var options = parseCliOptions(def.cliOptions);
+    def.portMappings =  def.portMappings.concat(options.portMappings);
+    delete def.cliOptions;
+  }
 }
 
 function parseCliOptions(options) {
@@ -110,6 +110,38 @@ function toPortMapping(pms) {
   });
   return portMappings.filter(function(f) {return f});
 }
+
+function mapPort80ToFreePort(def, callback) {
+  var mappedHostPort, mappedContainerPort;
+  function mapPort80(mapping, callback) {
+    if (mapping.hostPort == 80) {
+      findFreePort(function(err, port) {
+        if (err) return callback(err);
+        mappedHostPort = port;
+        mappedContainerPort = mapping.containerPort;
+        mapping.hostPort = port;
+        callback(null, mapping);
+      });
+    } else {
+        return process.nextTick(callback.bind(null, null));
+    }
+  }
+  console.log('mapPort80ToFreePort', def.portMappings);
+  async.each(def.portMappings, mapPort80, function(err) {
+    if (err) return callback(err);
+    return callback(null, {
+      hostPort: mappedHostPort,
+      containerPort: mappedContainerPort
+    });
+  });
+}
+
+function findFreePort(callback) {
+  var randomPort = Math.floor(Math.random() * 32000) + 32000;
+  console.log('findFreePort', randomPort);
+  process.nextTick(callback.bind(null, null, randomPort));
+}
+
 
 function ecsTaskRemove(properties, callback) {
   console.log('ecsTaskRemove', properties);
