@@ -13,7 +13,7 @@ var ecs = new aws.ECS({region: 'eu-west-1'});
 var elb = new aws.ELB({region: 'eu-west-1'});
 
 function ecsTask(properties, callback) {
-  var mainPort;
+  var mappedHostPort, mappedContainerPort;
   if (!properties.containerDefinitions)
     return callback("containerDefinitions not specified");
 
@@ -37,10 +37,11 @@ function ecsTask(properties, callback) {
     if (def.portMappings) {
       def.portMappings.forEach(function(mapping) {
         if (mapping.hostPort == 80) {
-          if (mainPort)
+          if (mappedHostPort)
             throw new Error('Only one hostPort can use 80');
-          mainPort = findFreePort();
-          mapping.hostPort = mainPort;
+          mappedHostPort = findFreePort();
+          mapping.hostPort = mappedHostPort;
+          mappedContainerPort = mapping.containerPort;
         }
       });
     }
@@ -53,7 +54,8 @@ function ecsTask(properties, callback) {
       return callback(err);
     }
     console.log(response);
-    callback(err, toOutputs(response.taskDefinition, mainPort));
+    callback(err, toOutputs(response.taskDefinition,
+                            mappedHostPort, mappedContainerPort));
   });
 }
 
@@ -126,12 +128,13 @@ function ecsTaskRemove(properties, callback) {
   });
 }
 
-function toOutputs(taskDefinition, mainPort) {
+function toOutputs(taskDefinition, hostPort, containerPort) {
   return {
     Family: taskDefinition.family,
     Revision: taskDefinition.revision,
     TaskDefinitionArn: taskDefinition.taskDefinitionArn,
-    HostPort: mainPort
+    HostPort: hostPort,
+    ContainerPort: containerPort
   }
 }
 

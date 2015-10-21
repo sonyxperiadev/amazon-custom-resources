@@ -37,7 +37,8 @@ It also auto generates an available port for
   Family: 'unstable-andersjanmyr-counter',
   Revison: 16,
   TaskDefinitionArn: 'arn:aws:ecs:eu-west-1:445573518738:task-definition/ecscompose-lifelog-deploy:16',
-  HostPort: '39055'
+  HostPort: '39055',
+  ContainerPort: '80'
 }
 ```
 
@@ -103,6 +104,11 @@ It also auto generates an available port for
     "HostPort": {
       "Value": {
         "Fn::GetAtt": [ "Task", "HostPort" ]
+      }
+    },
+    "ContainerPort": {
+      "Value": {
+        "Fn::GetAtt": [ "Task", "ContainerPort" ]
       }
     }
   }
