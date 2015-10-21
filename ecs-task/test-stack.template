@@ -13,6 +13,7 @@
           { "Ref": "AWS::AccountId" },
           ":function:ecsTask"
         ] ] },
+        "cluster": "unstable",
         "containerDefinitions": [
           {
             "envFiles": [

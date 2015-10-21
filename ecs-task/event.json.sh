@@ -13,6 +13,7 @@ cat <<EOT
   "ResourceType": "Custom::EcsTask",
   "ResourceProperties": {
     "ServiceToken": "$function_arn",
+    "cluster": "unstable",
     "containerDefinitions": [
       {
         "envFiles": [

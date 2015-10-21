@@ -16,6 +16,8 @@ var elb = new aws.ELB({region: 'eu-west-1'});
 function ecsTask(properties, callback) {
   if (!properties.containerDefinitions)
     return callback("containerDefinitions not specified");
+  if (!properties.cluster)
+    return callback("cluster is not specified");
 
   console.log('ecsTask', properties);
   delete properties.ServiceToken;
@@ -33,7 +35,8 @@ function ecsTask(properties, callback) {
   });
   if (host80Ports.length > 1)
     return process.nextTick(callback.bind(null, 'Only one hostPort can be 80'));
-  mapPort80ToFreePort(def, function(err, mapping) {
+  mapPort80ToFreePort(properties.cluster, def, function(err, mapping) {
+    delete properties.cluster;
     console.log('def', def, mapping);
     console.log('registerTaskDefinition', properties.containerDefinitions[0]);
     ecs.registerTaskDefinition(properties, function(err, response) {
@@ -111,11 +114,11 @@ function toPortMapping(pms) {
   return portMappings.filter(function(f) {return f});
 }
 
-function mapPort80ToFreePort(def, callback) {
+function mapPort80ToFreePort(cluster, def, callback) {
   var mappedHostPort, mappedContainerPort;
   function mapPort80(mapping, callback) {
     if (mapping.hostPort == 80) {
-      findFreePort(function(err, port) {
+      findFreePort(cluster, function(err, port) {
         if (err) return callback(err);
         mappedHostPort = port;
         mappedContainerPort = mapping.containerPort;
@@ -136,10 +139,46 @@ function mapPort80ToFreePort(def, callback) {
   });
 }
 
-function findFreePort(callback) {
-  var randomPort = Math.floor(Math.random() * 32000) + 32000;
-  console.log('findFreePort', randomPort);
-  process.nextTick(callback.bind(null, null, randomPort));
+function findFreePort(cluster, callback) {
+  unavailablePorts(cluster, function(err, ports) {
+    if (err) return callback(err);
+    console.log('ports', ports);
+    ports.push(0);
+    var randomPort = 0
+    while (ports.indexOf(randomPort) > -1) {
+      randomPort = Math.floor(Math.random() * 32000) + 32000;
+    }
+    console.log('findFreePort', randomPort);
+    callback(null, randomPort);
+  });
+}
+
+function unavailablePorts(cluster, callback) {
+  ecs.listTasks({cluster: cluster}, function(err, response) {
+    if (err) return callback(err);
+    var params = {cluster: cluster, tasks: response.taskArns};
+    ecs.describeTasks(params, function(err, response) {
+      if (err) return callback(err);
+      var params = response.tasks.map(function(task) {
+        return {taskDefinition: task.taskDefinitionArn};
+      });
+      console.log('params', params);
+      function describeTaskDefinition(params, callback) {
+        return ecs.describeTaskDefinition(params, callback);
+      }
+      async.map(params, describeTaskDefinition, function(err, responses) {
+        if (err) return callback(err);
+        var ports = responses.map(function(resp) {
+          var def = resp.taskDefinition.containerDefinitions[0];
+          return def.portMappings.map(function(mapping) {
+            return mapping.hostPort;
+          });
+        });
+        var ports = ports.concat.apply([], ports);
+        return callback(null, ports);
+      });
+    });
+  });
 }
 
 
