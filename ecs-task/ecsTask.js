@@ -1,6 +1,7 @@
 'use strict';
 
 var aws = require('aws-sdk');
+var parseArgs = require('minimist');
 
 console.log('SDK', aws.VERSION);
 
@@ -12,6 +13,7 @@ var ecs = new aws.ECS({region: 'eu-west-1'});
 var elb = new aws.ELB({region: 'eu-west-1'});
 
 function ecsTask(properties, callback) {
+  var mainPort;
   if (!properties.containerDefinitions)
     return callback("containerDefinitions not specified");
 
@@ -24,20 +26,25 @@ function ecsTask(properties, callback) {
       var environment = def.environment || [];
       environment = environment.concat.apply(environment, envs);
       def.environment = environment;
-      def.essential = (def.essential === 'true')
+      def.essential = (def.essential === true || def.essential === 'true')
       delete def.envFiles;
-      if (def.portMappings) {
-        def.portMappings.forEach(function(mapping) {
-          if (mapping.hostPort == 0)
-            mapping.hostPort = findFreePort();
-        });
-      }
-      if (aws.VERSION < '2.2.9') {
-        console.log('Trimming extraHosts and logConfiguration due to old Node Version < 2.2.9', aws.VERSION);
-        delete properties.containerDefinitions[0].extraHosts;
-        delete properties.containerDefinitions[0].logConfiguration;
-      }
     }
+    if (def.cliOptions) {
+      var options = parseCliOptions(def.cliOptions);
+      def.portMappings =  (def.portMappings||[]).concat(options.portMappings);
+      delete def.cliOptions;
+    }
+    if (def.portMappings) {
+      def.portMappings.forEach(function(mapping) {
+        if (mapping.hostPort == 80) {
+          if (mainPort)
+            throw new Error('Only one hostPort can use 80');
+          mainPort = findFreePort();
+          mapping.hostPort = mainPort;
+        }
+      });
+    }
+    console.log('def', def);
   });
   console.log('registerTaskDefinition', properties.containerDefinitions[0]);
   ecs.registerTaskDefinition(properties, function(err, response) {
@@ -46,7 +53,7 @@ function ecsTask(properties, callback) {
       return callback(err);
     }
     console.log(response);
-    callback(err, toOutputs(response.taskDefinition));
+    callback(err, toOutputs(response.taskDefinition, mainPort));
   });
 }
 
@@ -73,7 +80,34 @@ function findFreePort() {
   return randomPort;
 }
 
+function parseCliOptions(options) {
+  var args = parseArgs(options.split(' '));
+  var options = {}
+  options.portMappings = toPortMapping(toArray(args.p, args.port));
+  return options;
+}
 
+function toArray() {
+  var args = [];
+  for (var i=0; i < arguments.length; i++) {
+    var arg = arguments[i];
+    console.log(arg);
+    if (Array.isArray(arg))
+      args = args.concat(arg);
+    else
+      args.push(arg)
+  }
+  return args;
+}
+
+function toPortMapping(pms) {
+  var portMappings = pms.map(function(pm) {
+    if (!pm) return null;
+    var a = pm.split(':');
+    return { hostPort: a[0], containerPort: a[1] };
+  });
+  return portMappings.filter(function(f) {return f});
+}
 
 function ecsTaskRemove(properties, callback) {
   console.log('ecsTaskRemove', properties);
@@ -92,12 +126,12 @@ function ecsTaskRemove(properties, callback) {
   });
 }
 
-function toOutputs(taskDefinition) {
+function toOutputs(taskDefinition, mainPort) {
   return {
     Family: taskDefinition.family,
     Revision: taskDefinition.revision,
     TaskDefinitionArn: taskDefinition.taskDefinitionArn,
-    HostPort: taskDefinition.containerDefinitions[0].portMappings[0].hostPort
+    HostPort: mainPort
   }
 }
 

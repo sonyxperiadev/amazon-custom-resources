@@ -19,6 +19,7 @@ cat <<EOT
           "Dingo=elefant\nKatt=hund\n",
           "Tapir=aardvark\nKatt=cat"
         ],
+        "cliOptions": "--port 80:1234 -p 11111:11111",
         "environment": [
           {
             "name": "STATSD_HOST",
@@ -43,7 +44,7 @@ cat <<EOT
         "portMappings": [
           {
             "containerPort": 80,
-            "hostPort": 0
+            "hostPort": 11212
           }
         ]
       }

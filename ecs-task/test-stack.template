@@ -19,6 +19,7 @@
               "Dingo=elefant\nKatt=hund\n",
               "Tapir=aardvark\nKatt=cat"
             ],
+            "cliOptions": "-p 80:4444",
             "environment": [
               {
                 "name": "STATSD_HOST",
@@ -39,13 +40,7 @@
               }
             },
             "memory": 512,
-            "name": "unstable-andersjanmyr-counter",
-            "portMappings": [
-              {
-                "containerPort": "80",
-                "hostPort": 4444
-              }
-            ]
+            "name": "unstable-andersjanmyr-counter"
           }
         ]
       }
