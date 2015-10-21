@@ -83,7 +83,7 @@ function findFreePort() {
 function parseCliOptions(options) {
   var args = parseArgs(options.split(' '));
   var options = {}
-  options.portMappings = toPortMapping(toArray(args.p, args.port));
+  options.portMappings = toPortMapping(toArray(args.p, args.publish));
   return options;
 }
 

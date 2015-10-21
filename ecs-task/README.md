@@ -17,11 +17,17 @@ resource, `Custom::EcsTask`.
 
 The `Custom::EcsTask` takes the same parameters [AWS::ECS::TaskDefinition](http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ecs-taskdefinition.html)
 
-But, it also takes an `envFiles` property in the `containerDefinitions`
+But, it also take two additional properties in in the `containerDefinitions`
 section.
 
+* `envFiles` - takes a list of envFiles
+* `cliOptions` - takes a list of docker cli options. Currently, only `--publish`
+  and `-p` is supported.
+
+
+
 It also auto generates an available port for
-`containerDefinitions[].portMappings.hostPort` if this property is set to 0.
+`containerDefinitions[].portMappings.hostPort` if this property is set to 80.
 
 
 ### Example Output
@@ -56,6 +62,7 @@ It also auto generates an available port for
             "Dingo=elefant\nKatt=hund\n",
             "Tapir=aardvark\nKatt=cat"
           ],
+          "cliOptioins": "--port 80:1234 --port 1111:1212",
           "environment": [
             {
               "name": "STATSD_HOST",
