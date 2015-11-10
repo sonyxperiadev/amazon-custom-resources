@@ -52,6 +52,11 @@ and, if you use Docker, to provide them to the container with `docker run
 [echo-dependency](echo-dependency/README.md) returns its inputs as outputs. Can
 be used to force an update of a stack.
 
+### KMS Dependency
+
+[kms-dependency](kms-dependency/README.md) is used to decrypt a secret before it is
+used in cloudformation, i.e when creating a RDS db with cloudformation.
+
 ## Installation
 
 ```
