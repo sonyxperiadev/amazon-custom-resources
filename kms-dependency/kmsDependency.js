@@ -6,16 +6,20 @@ var kms = new AWS.KMS({
 });
 
 function kmsDependency(properties, callback) {
-    var value = properties.EncryptedValue;
-    if (!value) {
-      // process tick callback
-    }
-    if (value.substring(0, 4) === 'kms:')
-        return decryptText(value.substring(4), callback);
-    else if (value.substring(0, 5) === 'kmsb:')
-        return decryptBinary(value.substring(5), callback);
-    else
-      return callback({err:'No prefix kms: or kmsb:'})
+      var value = properties.EncryptedValue;
+
+      if (!value) {
+        process.nextTick(callback.bind(null,{err:'No field EncryptedValue found'}));
+      }
+
+      if (value.substring(0, 4) === 'kms:') {
+          return decryptText(value.substring(4), callback);
+      } else if (value.substring(0, 5) === 'kmsb:'){
+          return decryptBinary(value.substring(5), callback);
+      } else {
+        console.log("Could not find prefix kms: or kmsb: simply returning the value as is")
+        process.nextTick(callback.bind(null, null, value));
+      }
 }
 
 function decryptBinary(value, callback) {
