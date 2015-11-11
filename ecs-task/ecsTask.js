@@ -225,7 +225,7 @@ function sendResponse(event, context, status, data, err) {
     StackId: event.StackId,
     RequestId: event.RequestId,
     LogicalResourceId: event.LogicalResourceId,
-    PhysicalResourceId: 'ecsTask-' + ((data && data.TaskDefinitionArn)
+    PhysicalResourceId: 'ecsTask-' + ((data && data.Family)
       || event.ResourceProperties.Image),
     Status: status,
     Reason: getReason(err) + " See details in CloudWatch Log: " + context.logStreamName,
