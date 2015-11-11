@@ -11,6 +11,7 @@ function CloudFormationResponse(event, context) {
 }
 
 CloudFormationResponse.prototype._send = function (data) {
+  var self = this;
   if (this._hasResponded) {
     console.log('CloudFormationResponse already sent, ignoring all subsequent sends.');
     return bluebird.resolve();
@@ -33,7 +34,11 @@ CloudFormationResponse.prototype._send = function (data) {
     headers: {
       'content-type': ''
     }
-  }).then(this.context.succeed).catch(this.context.fail);
+  }).then(function (res) {
+    self.context.succeed(res);
+  }).catch(function (e) {
+    self.context.fail(e);
+  });
 };
 
 CloudFormationResponse.prototype.success = function (data) {
