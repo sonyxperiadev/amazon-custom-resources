@@ -60,6 +60,7 @@ used in cloudformation, i.e when creating a RDS db with cloudformation.
 ## Installation
 
 ```
-git clone repo
+# git clone the repo
+./init.sh
 ./deploy-all.sh
 ```
