@@ -36,7 +36,7 @@ the property `Environment`. `Environment` can also be excluded with `Excludes`.
 
 A Stack with the following Outputs defined, `Role`, and `RoleArn`
 
-```
+```json
 "Outputs": {
   "Role": {
     "Value": {"Ref":"Role"},
@@ -47,11 +47,14 @@ A Stack with the following Outputs defined, `Role`, and `RoleArn`
       "Description": "Role Arn"
     }
 }
+```
 
 It will receieve the following output, notice the newline separated
 Environment.
-```
-// Example output
+
+**Example output:**
+
+```javascript
 {
   Role: 'stack-Role-1MFTAH8MOJ8Y4',
   RoleArn: 'arn:aws:iam::445573518738:role/stack-Role-1MFTAH8MOJ8Y4',
@@ -61,7 +64,7 @@ Environment.
 
 ### Extended Example with Stack
 
-```
+```json
 "Parameters": {
   "IamRoleStack": {
     "Description": "Name of Iam role stack",
@@ -107,5 +110,3 @@ Environment.
   }
 }
 ```
-
-
