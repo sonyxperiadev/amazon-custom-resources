@@ -67,9 +67,14 @@ function envFileToEnvironment(envFile) {
   var env = lines.map(function(line) {
     var nameValue = line.split('=');
     if (!nameValue[0]) return null;
+    var name = nameValue[0];
+    var value = nameValue[1];
+    // Hack for solving values with = in them
+    for (var i = 2; i < nameValue.length; i++)
+      value += '=' + nameValue[i];
     return {
-      name: nameValue[0],
-      value: nameValue[1]
+      name: name,
+      value: value
     };
   });
   return env.filter(function(pair) {
