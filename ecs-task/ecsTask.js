@@ -6,10 +6,6 @@ var async = require('async');
 
 console.log('SDK', aws.VERSION);
 
-if(require.main === module) {
-  var sonyAwsProxyConfig = require('sony-aws-proxy-config');
-  aws.config.update(sonyAwsProxyConfig());
-}
 var ecs = new aws.ECS({region: 'eu-west-1'});
 var elb = new aws.ELB({region: 'eu-west-1'});
 
