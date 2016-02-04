@@ -27,11 +27,11 @@ Example: `"Fn::GetAtt": ["Route53", "Id"]`
 ```
 // Example Output
 {
-  Id: 'Z3U4KQS1NHWGKG',
-  Name: 'lifelog-dev.sonymobile.com',
+  Id: 'Z3U4KQS134WGKG',
+  Name: 'example.com',
   ResourceRecordSetCount: 17
 }
-
+```
 
 
 ### Extended Example with Stack
@@ -41,7 +41,7 @@ Example: `"Fn::GetAtt": ["Route53", "Id"]`
   "DomainName": {
     "Description": "Domain name for DNS",
     "Type": "String",
-    "Default": "lifelog-dev.sonymobile.com"
+    "Default": "example.com"
   }
 },
 "Resources": {
