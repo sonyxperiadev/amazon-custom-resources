@@ -2,7 +2,7 @@
 
 var bluebird = require('bluebird');
 var tmp = bluebird.promisifyAll(require('tmp'));
-var exec = bluebird.promisify(require('exec'));
+var exec = bluebird.promisify(require('child_process').exec);
 
 module.exports = function extractFileFromTarball(tarFile, archiveFile) {
   return tmp.fileAsync().then(function (results) {

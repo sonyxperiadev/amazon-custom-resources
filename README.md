@@ -7,6 +7,10 @@ simplifies the re-use of templates across Amazon accounts.
 
 ## Available Resources
 
+[lambda-with-config-and-vpc-support](lambda-with-config/README.md) A Lambda function 
+which implements a Custom Resource for CloudFormation thatdeploys lambdas together with 
+config files and supports deploying your lambda in a VPC.
+
 ### Elasticache Dependency
 
 When CloudFormation creates a Redis-backed Elasticache Cluster it does not

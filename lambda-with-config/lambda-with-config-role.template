@@ -10,7 +10,7 @@
     "Actions": {
       "Description": "Actions for the policy",
       "Type": "CommaDelimitedList",
-      "Default": "logs:*,cloudformation:*,lambda:*,s3:*,iam:PassRole"
+      "Default": "logs:*,cloudformation:*,lambda:*,s3:*,iam:PassRole,ec2:Describe*"
     }
 
   },
