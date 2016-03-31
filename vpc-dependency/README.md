@@ -26,7 +26,7 @@ This can be used to only get one subnet per zone.
 
 The outputs from the `Custom::VpcDependency` can be referred with `Fn:GetAtt`.
 
-Available values are: `VpcId`, `CidrBlock`, `SubnetIds`, `SubnetId0`, `SubnetId1`,...
+Available values are: `VpcId`, `CidrBlock`, `Subnets`, `SubnetIds`, `SubnetId0`, `SubnetId1`,...
 
 Example: `"Fn::GetAtt": ["Vpc", "VpcId"]`
 
@@ -44,7 +44,8 @@ Example: `"Fn::GetAtt": ["Vpc", "VpcId"]`
   SubnetId0: 'subnet-07110265',
   SubnetId1: 'subnet-041bfc6e',
   SubnetId2: 'subnet-a68eb3d2',
-  SubnetIds: 'subnet-07110265,subnet-041bfc6e,subnet-a68eb3d2'
+  SubnetIds: 'subnet-07110265,subnet-041bfc6e,subnet-a68eb3d2',
+  Subnets: ['subnet-07110265','subnet-041bfc6e','subnet-a68eb3d2']
 }
 ```
 

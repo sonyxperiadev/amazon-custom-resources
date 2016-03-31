@@ -42,6 +42,8 @@ function vpcDependency(properties, callback) {
         subnetIds.push(subnet.SubnetId);
       });
       match.SubnetIds = subnetIds.join(',');
+      // Added all subnet ids a array, seems more useful than comma separated string.
+      match.Subnets = subnetIds
       return callback(null, match);
     });
   });
