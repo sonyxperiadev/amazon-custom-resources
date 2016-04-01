@@ -1,7 +1,7 @@
 'use strict';
 
 var bluebird = require('bluebird');
-var exec = bluebird.promisify(require('exec'));
+var exec = bluebird.promisify(require('child_process').exec);
 var path = require('path');
 
 module.exports = function insertFileInZip(zipFile, file) {

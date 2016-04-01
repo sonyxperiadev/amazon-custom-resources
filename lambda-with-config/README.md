@@ -1,7 +1,7 @@
 # lambdaWithConfig
 
 A Lambda function which implements a Custom Resource for CloudFormation that
-deploys lambdas together with config files.
+deploys lambdas together with config files and also has support for running in a VPC.
 
 ## Installation
 
@@ -22,6 +22,10 @@ with a few exceptions:
   ZIP file.
 * `Code.S3Region` is available to support fetching Code ZIP files from buckets
   in other regions.
+  
+* `VpcConfig` is used to configure your lambda to run in a VPC by specifing an array of 
+  `SecurityGroupIds` and `SubnetIds`. The example below uses stack and vpc dependency to
+  find the correct values.
 
 ### Example
 
@@ -74,7 +78,19 @@ with a few exceptions:
         "Runtime" : "nodejs",
         "Timeout" : 30,
         "Config": {
-          "EnvironmentNamw": { "Ref": "EnvironmentName" }
+          "EnvironmentName": { "Ref": "EnvironmentName" }
+        },
+        "VpcConfig": {
+          "SecurityGroupIds": [
+            {
+              "Fn::GetAtt": [
+                "InfrastructureSupportStack", "InternalHTTPClientSecurityGroupId"]
+            }
+          ],
+          "SubnetIds": {
+            "Fn::GetAtt": [
+              "Vpc", "Subnets"]
+          }
         }
       }
     },
