@@ -59,7 +59,7 @@ function updateLambda(event) {
         var properties = _.assign({
             FunctionName: event.PhysicalResourceId
         },
-        _.omit(event.ResourceProperties, ['ServiceToken', 'Config', 'Code', 'FunctionName', 'Runtime']));
+        _.omit(event.ResourceProperties, ['ServiceToken', 'Config', 'Code', 'FunctionName', 'Runtime', 'ModifiedDate']));
          console.log('updating function with properties',properties)
         return lambda.updateFunctionConfigurationAsync(properties)
     }).catch(isFunctionNotFoundError, function () {
