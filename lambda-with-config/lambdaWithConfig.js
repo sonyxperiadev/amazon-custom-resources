@@ -29,7 +29,7 @@ function createLambda(event) {
         },
         FunctionName: event.PhysicalResourceId
       },
-      _.omit(event.ResourceProperties, ['ServiceToken', 'Config', 'Code', 'FunctionName']));
+      _.omit(event.ResourceProperties, ['ServiceToken', 'Config', 'Code', 'FunctionName', 'ModifiedDate']));
 
     return lambda.createFunctionAsync(properties);
   });
