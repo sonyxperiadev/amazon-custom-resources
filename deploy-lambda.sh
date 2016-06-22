@@ -55,7 +55,7 @@ create_function() {
     --description "$description" \
     --handler ${func}.handler \
     --timeout $timeout \
-    --memory-size 128 \
+    --memory-size 512 \
     --zip-file fileb://$zip
 }
 
@@ -74,4 +74,3 @@ if function_exists; then
 else
   create_function
 fi
-
