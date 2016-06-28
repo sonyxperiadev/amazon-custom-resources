@@ -55,19 +55,17 @@ function updateLambda(event) {
       ZipFile: code,
       FunctionName: event.PhysicalResourceId
     }).then(function() {
-        console.log('Updating configuration', event)
         var properties = _.assign({
             FunctionName: event.PhysicalResourceId
-        },
-        _.omit(event.ResourceProperties, ['ServiceToken', 'Config', 'Code', 'FunctionName', 'Runtime', 'ModifiedDate']));
-         console.log('updating function with properties',properties)
-        return lambda.updateFunctionConfigurationAsync(properties)
+        }, _.omit(event.ResourceProperties, ['ServiceToken', 'Config', 'Code', 'FunctionName', 'ModifiedDate']));
+        console.log('updating function with properties', properties);
+        return lambda.updateFunctionConfigurationAsync(properties);
     }).catch(isFunctionNotFoundError, function () {
         // Should it fail or try create? Should only happen if the resource was deleted
         // outside of CF and this could provide away of actually restore it properly
         console.log('Function not found during update, trying to create it instead.');
-        return createLambda(event)
-  })
+        return createLambda(event);
+    })
   });
 }
 
