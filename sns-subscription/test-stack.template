@@ -1,0 +1,45 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Test Stack for SnsSubscription",
+
+  "Resources": {
+    "Topic" : {
+      "Type" : "AWS::SNS::Topic",
+      "Properties" : {
+          "Subscription" : [
+          ]
+      }
+    },
+    "Subscription": {
+      "Type": "Custom::SnsSubscription",
+      "Properties": {
+        "ServiceToken": { "Fn::Join": [ "", [
+          "arn:aws:lambda:",
+          { "Ref": "AWS::Region" },
+          ":",
+          { "Ref": "AWS::AccountId" },
+          ":function:snsSubscription"
+        ] ] },
+        "TopicArn": { "Ref": "Topic" },
+        "Protocol": "lambda",
+        "Endpoint": { "Fn::Join": [ "", [
+                              "arn:aws:lambda:",
+                              { "Ref": "AWS::Region" },
+                              ":",
+                              { "Ref": "AWS::AccountId" },
+                              ":function:snsSubscription"
+                            ] ] }
+      }
+    }
+  },
+
+  "Outputs": {
+    "SubscriptionArn": {
+      "Value": {
+        "Fn::GetAtt": [ "Subscription", "SubscriptionArn" ]
+      },
+      "Description": "SubscriptionArn"
+    }
+  }
+}
+
