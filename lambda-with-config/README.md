@@ -20,9 +20,10 @@ with a few exceptions:
   can be compromised of literal values and CloudFormation Refs as you would
   expect. The config object will be added as `config.json` in the root of the
   ZIP file.
+* `FunctionName` is not supported. The name will be based on the stack and resource name and is available
+  using `{"Fn::GetAtt": ["MyLambda", "FunctionName"]}`.
 * `Code.S3Region` is available to support fetching Code ZIP files from buckets
   in other regions.
-  
 * `VpcConfig` is used to configure your lambda to run in a VPC by specifing an array of 
   `SecurityGroupIds` and `SubnetIds`. The example below uses stack and vpc dependency to
   find the correct values.
@@ -67,10 +68,6 @@ with a few exceptions:
           ]]}
         },
         "Handler": "lambda.handler",
-        "FunctionName": { "Fn::Join": [ "", [
-          { "Ref": "EnvironmentName" },
-          "-myservice-mylambda"
-        ]]},
         "MemorySize": 128,
         "Role" : {
           "Fn::GetAtt" : ["LambdaExecutionRole", "Arn"]
