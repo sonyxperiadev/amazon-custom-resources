@@ -4,6 +4,8 @@ var aws = require('aws-sdk');
 var _ = require('lodash');
 var Promise = require('bluebird');
 var uuid = require('node-uuid');
+var crypto = require('crypto');
+
 var lambda = new aws.Lambda();
 lambda.invokeAsync = null;
 lambda = Promise.promisifyAll(lambda);
@@ -12,7 +14,8 @@ var CloudFormationResponse = require('./lib/cloud-formation-response');
 var getZipWithConfigAsBuffer = require('./lib/get-zip-with-config-as-buffer');
 
 function generateUniqueFunctionName(event) {
-  var name = event.ResourceProperties.FunctionName + '-' + uuid.v4();
+  var stackName = event.StackId.split(':')[5].split('/')[1];
+  var name = stackName + '-' + event.LogicalResourceId + '-' + crypto.pseudoRandomBytes(6).toString('hex');
   return name.substring(0, 64);
 }
 

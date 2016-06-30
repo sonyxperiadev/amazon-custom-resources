@@ -23,7 +23,6 @@ cat <<EOT
     },
     "Description" : "",
     "Handler" : "lambda.handler",
-    "FunctionName": "debug-lambda",
     "MemorySize" : 128,
     "Role" : "arn:aws:iam::445573518738:role/lambda-with-config-support-Role-1VKH6ROZF21FT",
     "Runtime" : "nodejs",
