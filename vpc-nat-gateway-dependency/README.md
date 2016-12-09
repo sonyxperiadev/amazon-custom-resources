@@ -1,6 +1,5 @@
 # Vpc NAT Gateway Dependency
 ## INFO
-This is currently a work in progress and is not completed yet.
 
 A Lambda function which implements a Custom Resource for Cloud Formation that enables Internet access for a Lambda inside a VPC.
  It will create the following:
