@@ -10,7 +10,7 @@ A Lambda function which implements a Custom Resource for Cloud Formation that en
  * Routes connecting Internet Gateway and Internet Gateway Route Table
  * Associations between Routes and Route Tables
 
-Updating or Deleting this Custom Resource will not trigger remoaval of the created Vpc Resources (mentioned above).
+Updating or Deleting this Custom Resource will not trigger removal of the created Vpc Resources (mentioned above).
 
 This means that you need to verify eventual Vpc Resources that was created by this Custom Resource and manually remove them if no longer needed.
 
