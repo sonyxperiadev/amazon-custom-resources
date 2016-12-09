@@ -27,35 +27,10 @@ const vpcNATGatewayDependecy = (event, callback) => {
   };
 
   return findSubnets(initialState)
-    .then(res => {
-        console.log('FIND SUBNETS RES');
-        console.log(JSON.stringify(res));
-        return res;
-    })
     .then(findNATGateway)
-    .then(res => {
-      console.log('FIND NAT GW RES');
-      console.log(JSON.stringify(res));
-      return res;
-    })
     .then(findInternetGateway)
-    .then(res => {
-      console.log('FIND IGW RES');
-      console.log(JSON.stringify(res));
-      return res;
-    })
     .then(findNATRouteTable)
-    .then(res => {
-      console.log('FIND NAT RT RES');
-      console.log(JSON.stringify(res));
-      return res;
-    })
     .then(findIGWRouteTable)
-    .then(res => {
-      console.log('FIND IGW RT RES');
-      console.log(JSON.stringify(res));
-      return res;
-    })
     .then(result => result.callback(null, result))
     .catch(err => {
       return initialState.callback(err);
