@@ -61,6 +61,10 @@ be used to force an update of a stack.
 [kms-dependency](kms-dependency/README.md) is used to decrypt a secret before it is
 used in cloudformation, i.e when creating a RDS db with cloudformation.
 
+### VPC NAT Gateway Dependency
+
+[vpc-nat-gateway-dependency](vpc-nat-gateway-dependency/README.md) enables Internet access for a Lambda inside a VPC by creating necessary VPC resources such as NAT Gateway, Route Tables, Routes etc.
+
 ### 
 
 [sns-subscription](sns-subscription/README.md) is used to create a SNS subscription to an already
