@@ -2,3 +2,4 @@
 /target/
 *.zip
 .DS_Store
+/.idea/
