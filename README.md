@@ -65,7 +65,7 @@ used in cloudformation, i.e when creating a RDS db with cloudformation.
 
 [vpc-nat-gateway-dependency](vpc-nat-gateway-dependency/README.md) enables Internet access for a Lambda inside a VPC by creating necessary VPC resources such as NAT Gateway, Route Tables, Routes etc.
 
-### 
+### SNS Subscription
 
 [sns-subscription](sns-subscription/README.md) is used to create a SNS subscription to an already
 existing SNS topic.
