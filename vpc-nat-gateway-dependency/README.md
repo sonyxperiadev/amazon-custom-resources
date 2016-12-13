@@ -24,10 +24,26 @@ used to get VPCs via a Cloud Formation Custom Resource.
 
 ## Cloud Formation Usage
 
-Use the function inside your Cloud Formation template by declaring a custom
-resource, `Custom::VpcNatGatewayDependency`.
+### Requirements
 
-Example:
+ * `VpcId`: Id of the Vpc in which the Lambda that needs internet access exists. The VpcId must be supplied to the 
+ CloudFormation template.
+ * `NATSubnets`: The NAT Subnets to be used by this resource needs to be manually created and supplied to the 
+ CloudFormation template.
+ * `IGWSubnet`: The Internet Gateway Subnet that will be used by the NATGateway that this resource will create.
+
+You can provide multiple NATSubnets but only one Internet Gateway Subnet and VpcId.
+
+
+### Usage example
+*Use the function inside your Cloud Formation template by declaring a custom
+resource, `Custom::VpcNatGatewayDependency`.*
+
+In this example we have already supplied `SubnetToNAT1aId`, `SubnetToNAT1aCidr`, `SubnetToNAT1bId`, 
+`SubnetToNAT1bCidr`, `IGWSubnetId`, `IGWSubnetCidr` and `Vpc` in our template and are just referring to them .
+
+
+
 ```
 
 "VpcNATGatewayDependency": {
@@ -68,5 +84,3 @@ Example:
     }
 
 ```
-
-You can provide multiple NATSubnets but only one Internet Gateway Subnet and VpcId.
