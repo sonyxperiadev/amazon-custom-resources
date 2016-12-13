@@ -37,17 +37,17 @@ const vpcNATGatewayDependecy = (event, callback) => {
     });
 };
 
-function deleteLambda(event) {
+const deleteLambda = event => {
     console.log('Deleting lambda', event.PhysicalResourceId);
     return lambda.deleteFunctionAsync({
         FunctionName: event.PhysicalResourceId
     }).catch(isFunctionNotFoundError, function () {
         console.log('Function not found, ignoring.');
     });
-}
+};
 
 
-vpcNATGatewayDependecy.handler = function(event, context) {
+vpcNATGatewayDependecy.handler = (event, context) => {
     console.log(JSON.stringify(event, null, '  '));
 
     if (event.RequestType == 'Delete') {
@@ -60,16 +60,12 @@ vpcNATGatewayDependecy.handler = function(event, context) {
     });
 };
 
-function getReason(err) {
-    if (err)
-        return err.message;
-    else
-        return '';
-}
+module.exports = vpcNATGatewayDependecy;
 
+const getReason = err => err ? err.message : '';
 
-function sendResponse(event, context, status, data, err) {
-    var responseBody = {
+const sendResponse = (event, context, status, data, err) => {
+    const responseBody = {
         StackId: event.StackId,
         RequestId: event.RequestId,
         LogicalResourceId: event.LogicalResourceId,
@@ -80,13 +76,13 @@ function sendResponse(event, context, status, data, err) {
     };
 
     console.log("RESPONSE:\n", responseBody);
-    var json = JSON.stringify(responseBody);
+    const json = JSON.stringify(responseBody);
 
-    var https = require("https");
-    var url = require("url");
+    const https = require("https");
+    const url = require("url");
 
-    var parsedUrl = url.parse(event.ResponseURL);
-    var options = {
+    const parsedUrl = url.parse(event.ResponseURL);
+    const options = {
         hostname: parsedUrl.hostname,
         port: 443,
         path: parsedUrl.path,
@@ -97,45 +93,42 @@ function sendResponse(event, context, status, data, err) {
         }
     };
 
-    var request = https.request(options, function(response) {
+    let request = https.request(options, response => {
         console.log("STATUS: " + response.statusCode);
         console.log("HEADERS: " + JSON.stringify(response.headers));
         context.done(null, data);
     });
 
-    request.on("error", function(error) {
+    request.on("error", error => {
         console.log("sendResponse Error:\n", error);
         context.done(error);
     });
 
-    request.on("end", function() {
+    request.on("end", () => {
         console.log("end");
     });
     request.write(json);
     request.end();
-}
-
-
-module.exports = vpcNATGatewayDependecy;
+};
 
 if(require.main === module) {
     console.log("called directly");
     if (process.argv.length < 3)
         usageExit();
     try {
-        var data = JSON.parse(process.argv[2]);
+        const data = JSON.parse(process.argv[2]);
     } catch (error) {
         console.error('Invalid JSON', error);
         usageExit();
     }
-    vpcNATGatewayDependecy(data, function(err, res) {
+    vpcNATGatewayDependecy(data, (err, res) => {
         console.log("Result", err, res);
     });
 }
 
-function usageExit() {
+const usageExit = () => {
     var path = require('path');
     console.error('Usage: '  + path.basename(process.argv[1]) + ' json-array');
     process.exit(1);
-}
+};
 
