@@ -1,8 +1,10 @@
 # Vpc NAT Gateway Dependency
-## INFO
+## Getting started
+### Info
 
-A Lambda function which implements a Custom Resource for Cloud Formation that enables Internet access for a Lambda inside a VPC.
- It will create the following:
+This is a Custom Resource for Cloud Formation that enables Internet access for a Lambda inside a VPC.
+ 
+ It will create the following Vpc Resources:
  * NAT Gateway
  * Internet Gateway
  * Route Tables for NAT Subnets and Internet Gateway Subnet
@@ -14,7 +16,7 @@ Updating or Deleting this Custom Resource will not trigger removal of the create
 
 This means that you need to verify eventual Vpc Resources that was created by this Custom Resource and manually remove them if no longer needed.
 
-## Installation
+### Installation
 
 Create a Role with `./create-role.sh`. This creates a new stack with the
 appropriate permissions for the function.
