@@ -1,9 +1,7 @@
 'use strict';
 
-const immutable = require('object-path-immutable');
 const crypto = require('crypto');
-const aws = require("aws-sdk");
-const Promise = require('bluebird');
+const R = require('ramda');
 
 const findSubnets = require('./lib/create-subnets');
 const findNATGateway = require('./lib/create-nat-gateway');
@@ -26,41 +24,11 @@ const vpcNATGatewayDependecy = (event, callback) => {
     callback: callback
   };
 
-  return findSubnets(initialState)
-    .then(findNATGateway)
-    .then(findInternetGateway)
-    .then(findNATRouteTable)
-    .then(findIGWRouteTable)
-    .then(result => result.callback(null, result))
-    .catch(err => {
-      return initialState.callback(err);
-    });
+    const createVpcResources = R.composeP(findIGWRouteTable, findNATRouteTable, findInternetGateway, findNATGateway, findSubnets);
+    return createVpcResources(initialState)
+        .then(result => result.callback(null, result))
+        .catch(err => initialState.callback(err));
 };
-
-const deleteLambda = event => {
-    console.log('Deleting lambda', event.PhysicalResourceId);
-    return lambda.deleteFunctionAsync({
-        FunctionName: event.PhysicalResourceId
-    }).catch(isFunctionNotFoundError, function () {
-        console.log('Function not found, ignoring.');
-    });
-};
-
-
-vpcNATGatewayDependecy.handler = (event, context) => {
-    console.log(JSON.stringify(event, null, '  '));
-
-    if (event.RequestType == 'Delete') {
-        return sendResponse(event, context, "SUCCESS");
-    }
-
-    vpcNATGatewayDependecy(event, function(err, result) {
-        var status = err ? 'FAILED' : 'SUCCESS';
-        return sendResponse(event, context, status, result, err);
-    });
-};
-
-module.exports = vpcNATGatewayDependecy;
 
 const getReason = err => err ? err.message : '';
 
@@ -71,64 +39,81 @@ const sendResponse = (event, context, status, data, err) => {
         LogicalResourceId: event.LogicalResourceId,
         PhysicalResourceId: event.PhysicalResourceId,
         Status: status,
-        Reason: getReason(err) + " See details in CloudWatch Log: " + context.logStreamName,
+        Reason: getReason(err) + ' See details in CloudWatch Log: ' + context.logStreamName,
         Data: data
     };
 
-    console.log("RESPONSE:\n", responseBody);
+    console.log('RESPONSE:\n', responseBody);
     const json = JSON.stringify(responseBody);
 
-    const https = require("https");
-    const url = require("url");
+    const https = require('https');
+    const url = require('url');
 
     const parsedUrl = url.parse(event.ResponseURL);
     const options = {
         hostname: parsedUrl.hostname,
         port: 443,
         path: parsedUrl.path,
-        method: "PUT",
+        method: 'PUT',
         headers: {
-            "content-type": "",
-            "content-length": json.length
+            'content-type': '',
+            'content-length': json.length
         }
     };
 
-    let request = https.request(options, response => {
-        console.log("STATUS: " + response.statusCode);
-        console.log("HEADERS: " + JSON.stringify(response.headers));
+    const request = https.request(options, function(response) {
+        console.log('STATUS: ' + response.statusCode);
+        console.log('HEADERS: ' + JSON.stringify(response.headers));
         context.done(null, data);
     });
 
-    request.on("error", error => {
-        console.log("sendResponse Error:\n", error);
+    request.on('error', function(error) {
+        console.log('sendResponse Error:\n', error);
         context.done(error);
     });
 
-    request.on("end", () => {
-        console.log("end");
+    request.on('end', function() {
+        console.log('end');
     });
     request.write(json);
     request.end();
 };
 
+vpcNATGatewayDependecy.handler = (event, context) => {
+    console.log(JSON.stringify(event, null, '  '));
+
+    if (event.RequestType == 'Delete') {
+        return sendResponse(event, context, 'SUCCESS');
+    }
+
+    vpcNATGatewayDependecy(event, function(err, result) {
+        const status = err ? 'FAILED' : 'SUCCESS';
+        return sendResponse(event, context, status, result, err);
+    });
+};
+
+module.exports = vpcNATGatewayDependecy;
+
+
+const usageExit = () => {
+    const path = require('path');
+    console.error('Usage: ' + path.basename(process.argv[1]) + ' json-array');
+    process.exit(1); //eslint-disable-line no-process-exit
+};
+
 if(require.main === module) {
-    console.log("called directly");
+    console.log('called directly');
     if (process.argv.length < 3)
         usageExit();
     try {
-        const data = JSON.parse(process.argv[2]);
+        const data = JSON.parse(process.argv[2]);   //eslint-disable-line no-unused-vars
     } catch (error) {
         console.error('Invalid JSON', error);
         usageExit();
     }
-    vpcNATGatewayDependecy(data, (err, res) => {
-        console.log("Result", err, res);
+
+    vpcNATGatewayDependecy(data, (err, res) => {    //eslint-disable-line no-undef
+        console.log('Result', err, res);
     });
 }
-
-const usageExit = () => {
-    var path = require('path');
-    console.error('Usage: '  + path.basename(process.argv[1]) + ' json-array');
-    process.exit(1);
-};
 
