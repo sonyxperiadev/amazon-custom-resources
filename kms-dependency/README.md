@@ -28,6 +28,9 @@ The `Custom::KmsDependency` takes any parameters and returns them as outputs.
 
 ### Extended Example with Stack
 
+This is an example of how to reference the decrypted value returned by KMS.
+Note: In real life usage, the decrypted value should not be output from the Stack.
+
 ```
 "Parameters": {
   "EncryptedValue": {
@@ -51,11 +54,11 @@ The `Custom::KmsDependency` takes any parameters and returns them as outputs.
     }
   },
   "Outputs": {
-    "EncryptedValue": {
+    "DecryptedValue": {
       "Value": {
-        "Ref": "EncryptedValue"
+        "Fn::GetAtt": ["KMS", "DecryptedValue"]
       },
-      "Description": "Only the encrypted value should be output"
+      "Description": "The decrypted value."
     }
   }
 }
