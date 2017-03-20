@@ -1,0 +1,61 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Test Stack for Vpc",
+
+  "Resources": {
+    "DefaultVpc": {
+      "Type": "Custom::VpcDependency",
+      "Properties": {
+        "ServiceToken": { "Fn::Join": [ "", [
+          "arn:aws:lambda:",
+          { "Ref": "AWS::Region" },
+          ":",
+          { "Ref": "AWS::AccountId" },
+          ":function:vpcDependency"
+        ] ] },
+        "VpcName": "default"
+      }
+    },
+    "NamedVpc": {
+      "Type": "Custom::VpcDependency",
+      "Properties": {
+        "ServiceToken": { "Fn::Join": [ "", [
+          "arn:aws:lambda:",
+          { "Ref": "AWS::Region" },
+          ":",
+          { "Ref": "AWS::AccountId" },
+          ":function:vpcDependency"
+        ] ] },
+        "VpcName": "xlog-VPC"
+      }
+    }
+  },
+
+  "Outputs": {
+    "DefaultVpc": {
+      "Value": {
+        "Fn::GetAtt": [ "DefaultVpc", "VpcId" ]
+      },
+      "Description": "Default VPC Id"
+    },
+    "DefaultSubnetIds": {
+      "Value": {
+        "Fn::GetAtt": [ "DefaultVpc", "SubnetIds" ]
+      },
+      "Description": "Default Subnet Ids"
+    },
+    "DefaultSubnet0": {
+      "Value": {
+        "Fn::GetAtt": [ "DefaultVpc", "Subnet0" ]
+      },
+      "Description": "Default Subnet 0"
+    },
+    "NamedVpc": {
+      "Value": {
+        "Fn::GetAtt": [ "NamedVpc", "VpcId" ]
+      },
+      "Description": "Named VPC Id"
+    }
+  }
+}
+

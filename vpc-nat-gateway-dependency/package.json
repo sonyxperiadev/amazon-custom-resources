@@ -1,0 +1,28 @@
+{
+  "name": "vpc-nat-gateway-dependency",
+  "version": "0.0.1",
+  "description": "A Lambda function which implements a Custom Resource for CloudFormation that creates a NAT Gateway for allowing lambdas within vpc internetaccess",
+  "engines": {
+    "node": "4.3.2"
+  },
+  "main": "vpcNATGatewayDependency.js",
+  "scripts": {},
+  "author": "Sony Mobile Communications",
+  "license": "GPLv3",
+  "dependencies": {
+    "aws-sdk": "^2.7.6",
+    "bluebird": "^3.4.6",
+    "lodash": "^4.17.2",
+    "object-path-immutable": "^0.5.1",
+    "ramda": "^0.22.1",
+    "request": "^2.79.0",
+    "request-promise": "^4.1.1",
+    "tmp": "0.0.31"
+  },
+  "devDependencies": {
+    "chai": "^3.3.0",
+    "mocha": "^2.3.3",
+    "mockery": "^1.4.0",
+    "node-zip": "^1.1.1"
+  }
+}
