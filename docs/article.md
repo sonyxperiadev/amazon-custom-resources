@@ -209,7 +209,7 @@ function sendResponse(event, context, status, data, err) {
     StackId: event.StackId,
     RequestId: event.RequestId,
     LogicalResourceId: event.LogicalResourceId,
-    PhysicalResourceId: route53Dependency-' + event.ResourceProperties.DomainName,
+    PhysicalResourceId: 'route53Dependency-' + event.ResourceProperties.DomainName,
     Status: status,
     Reason: reason + " See details in CloudWatch Log: " + context.logStreamName,
     Data: data
