@@ -4,7 +4,7 @@ CloudFormation stacks are very nice for setting up complete server environments.
 But, there are a few problems.
 
 * Keeping all resources in one stack may not be possible since some resources,
-  such as Kineses may be needed by used by multiple stacks.
+  such as Kinesis may be used by multiple stacks.
 * If your stack depends on external resources you have to maintain these
   resources separately and send them as parameters when creating new stacks.
 * If you have multiple accounts or environments you have to maintain one
@@ -352,4 +352,3 @@ CloudFormation extended with Custom Resources is a powerful tool that enables
 us to setup almost all our AWS resources. Currently we are not deploying our
 Lambdas via CloudFormation but we are working on it.
 [Stay tuned!](https://github.com/sonyxperiadev/amazon-custom-resources)
-
