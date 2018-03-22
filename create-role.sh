@@ -1,6 +1,6 @@
 #!/bin/bash
 
-region='eu-west-1'
+region=${REGION:-eu-west-1}
 
 if [ $# -lt 2 ]
 then

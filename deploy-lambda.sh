@@ -6,7 +6,7 @@
 
 set -o errexit
 
-region='eu-west-1'
+region=${REGION:-eu-west-1}
 
 if [ $# -lt 2 ]
 then
@@ -50,7 +50,7 @@ create_function() {
   aws lambda create-function \
     --region $region \
     --role $role_arn \
-    --runtime nodejs \
+    --runtime nodejs6.10 \
     --function-name $func  \
     --description "$description" \
     --handler ${func}.handler \
