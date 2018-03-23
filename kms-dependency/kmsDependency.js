@@ -2,7 +2,7 @@
 
 var AWS = require('aws-sdk');
 var kms = new AWS.KMS({
-    region: process.env.REGION || 'eu-west-1'
+    region: process.env.REGION || process.env.AWS_DEFAULT_REGION
 });
 
 function kmsDependency(properties, callback) {
